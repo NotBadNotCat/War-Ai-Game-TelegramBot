@@ -8,5 +8,6 @@ namespace Shotgun_Roulette_Game_TelegramBot
 {
     internal class Storage
     {
+
     }
 }

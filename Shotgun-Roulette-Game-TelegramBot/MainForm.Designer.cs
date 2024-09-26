@@ -1,6 +1,6 @@
 ﻿namespace Shotgun_Roulette_Game_TelegramBot
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
