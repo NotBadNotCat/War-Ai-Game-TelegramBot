@@ -8,7 +8,9 @@ namespace Shotgun_Roulette_Game_TelegramBot
 {
     internal class User
     {
-        public User(Int64 userId) { UserId = userId; }
+        public User(Int64 userId, string firstName, string nickName) 
+        { UserId = userId; FirstName = firstName; NickName = nickName; }
+
         public string FirstName = null!;
         public string NickName = null!;
         public Int64 UserId;

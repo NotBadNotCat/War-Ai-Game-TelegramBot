@@ -10,7 +10,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
     {
         public static Dictionary<Int64, User> Users = new Dictionary<Int64, User>();
 
-        public static bool UserExsistCheckAndWrite(Int64 userId)
+        public static bool UserExsistCheckAndWrite(Int64 userId, string firstName, string nickName)
         {
             if (Users.ContainsKey(userId))
             { 
@@ -18,7 +18,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
             }
             else
             {
-                Users.Add(userId, new User());
+                Users.Add(userId, new User(userId, firstName, nickName));
                 return false;
             }
         }

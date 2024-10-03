@@ -28,21 +28,27 @@ namespace Shotgun_Roulette_Game_TelegramBot
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
                 Int64 chatId = update.CallbackQuery.Message.Chat.Id;
-                Storage.UserExsistCheckAndWrite(chatId);
+
+                Storage.UserExsistCheckAndWrite(chatId, update.Message.Chat.FirstName, update.Message.Chat.Username);
                 Storage.Users[chatId].Messages.Add("#Click#");
+
+
             }
             else if (update.Type == Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
             {
                 Int64 chatId = update.Message.Chat.Id;
-                string massage = update.Message.Text;
-                Storage.UserExsistCheckAndWrite(chatId);
-                Storage.Users[chatId].Messages.Add(massage);
+                string massageText = update.Message.Text;
+
+                Storage.UserExsistCheckAndWrite(chatId, update.Message.Chat.FirstName, update.Message.Chat.Username);
+                Storage.Users[chatId].Messages.Add(massageText);
             }
             else
             {
                 Int64 chatId = update.Message.Chat.Id;
-                Storage.UserExsistCheckAndWrite(chatId);
+
+                Storage.UserExsistCheckAndWrite(chatId, update.Message.Chat.FirstName, update.Message.Chat.Username);
                 Storage.Users[chatId].Messages.Add("#Wrong_Format_Message#");
+
                 SendMessage(Storage.Users[chatId], "К сожалению, бот не умеет обрабатывать сообщения данного формата, но не переживайте мы его сохраним в реестр сообщений!!!\n\nНапишите /start чтобы пользоваться ботом!");
             }
         }
