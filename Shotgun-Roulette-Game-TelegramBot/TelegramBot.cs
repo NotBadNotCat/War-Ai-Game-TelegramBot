@@ -12,10 +12,10 @@ namespace Shotgun_Roulette_Game_TelegramBot
     internal class TelegramBot
     {
 
-        private static TelegramBotClient? BotClient;
+        private static TelegramBotClient BotClient = null!;
         public static void StartTelegramBot()
         {
-            BotClient = new TelegramBotClient("5444454");
+            BotClient = new TelegramBotClient("7762140132:AAEU2Iz0juwg80byvemHPyjW_djZu2ycRaQ");
             BotClient?.StartReceiving(updateHandler: HandleUpdate, pollingErrorHandler: HandlePollingError);
         }
         private static async Task HandlePollingError(ITelegramBotClient client, Exception exception, CancellationToken token)
@@ -25,16 +25,14 @@ namespace Shotgun_Roulette_Game_TelegramBot
         private static async Task HandleUpdate(ITelegramBotClient client, Update update, CancellationToken token)
         {
 
-            if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
+            if (update.Type == Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
             {
                 Int64 chatId = update.CallbackQuery.Message.Chat.Id;
 
                 Storage.UserExsistCheckAndWrite(chatId, update.Message.Chat.FirstName, update.Message.Chat.Username);
-                Storage.Users[chatId].Messages.Add("#Click#");
-
-
+                Storage.Users[chatId].Messages.Add($"#Click = {update.CallbackQuery.Message}#");
             }
-            else if (update.Type == Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
+            else if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
                 Int64 chatId = update.Message.Chat.Id;
                 string massageText = update.Message.Text;

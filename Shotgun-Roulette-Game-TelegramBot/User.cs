@@ -14,7 +14,11 @@ namespace Shotgun_Roulette_Game_TelegramBot
         public string FirstName = null!;
         public string NickName = null!;
         public Int64 UserId;
+
         public List<string> Messages = new List<string>();
 
+        public bool InOnlineGame;
+        public bool InSandbox;
+        public bool InSearchGame;
     }
 }

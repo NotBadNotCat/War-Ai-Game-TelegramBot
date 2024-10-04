@@ -28,147 +28,154 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.userIdListBox = new System.Windows.Forms.ListBox();
-            this.openChatButton = new System.Windows.Forms.Button();
-            this.loadInfoButton = new System.Windows.Forms.Button();
-            this.infoGroupBox = new System.Windows.Forms.GroupBox();
-            this.stopAllMatchButton = new System.Windows.Forms.Button();
-            this.matchInfoLabel = new System.Windows.Forms.Label();
-            this.buttonGroupBox = new System.Windows.Forms.GroupBox();
-            this.saveAllButton = new System.Windows.Forms.Button();
-            this.clearMessageDBButton = new System.Windows.Forms.Button();
-            this.buttonGroupBox.SuspendLayout();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            userIdListBox = new ListBox();
+            openChatButton = new Button();
+            loadInfoButton = new Button();
+            infoGroupBox = new GroupBox();
+            stopAllMatchButton = new Button();
+            matchInfoLabel = new Label();
+            buttonGroupBox = new GroupBox();
+            saveAllButton = new Button();
+            clearMessageDBButton = new Button();
+            updateTimer = new System.Windows.Forms.Timer(components);
+            buttonGroupBox.SuspendLayout();
+            SuspendLayout();
             // 
             // userIdListBox
             // 
-            this.userIdListBox.BackColor = System.Drawing.Color.AntiqueWhite;
-            this.userIdListBox.DisplayMember = "1";
-            this.userIdListBox.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.userIdListBox.FormattingEnabled = true;
-            this.userIdListBox.ItemHeight = 21;
-            this.userIdListBox.Location = new System.Drawing.Point(12, 72);
-            this.userIdListBox.Name = "userIdListBox";
-            this.userIdListBox.Size = new System.Drawing.Size(320, 571);
-            this.userIdListBox.TabIndex = 0;
+            userIdListBox.BackColor = Color.AntiqueWhite;
+            userIdListBox.DisplayMember = "1";
+            userIdListBox.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            userIdListBox.FormattingEnabled = true;
+            userIdListBox.ItemHeight = 21;
+            userIdListBox.Location = new Point(12, 72);
+            userIdListBox.Name = "userIdListBox";
+            userIdListBox.Size = new Size(320, 571);
+            userIdListBox.TabIndex = 0;
             // 
             // openChatButton
             // 
-            this.openChatButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.openChatButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            this.openChatButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.openChatButton.Location = new System.Drawing.Point(12, 12);
-            this.openChatButton.Name = "openChatButton";
-            this.openChatButton.Size = new System.Drawing.Size(158, 53);
-            this.openChatButton.TabIndex = 1;
-            this.openChatButton.Text = "Открыть чат с пользователем";
-            this.openChatButton.UseVisualStyleBackColor = false;
-            this.openChatButton.Click += new System.EventHandler(this.openChatButton_Click);
+            openChatButton.BackColor = Color.FromArgb(0, 64, 0);
+            openChatButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            openChatButton.ForeColor = SystemColors.ButtonHighlight;
+            openChatButton.Location = new Point(12, 12);
+            openChatButton.Name = "openChatButton";
+            openChatButton.Size = new Size(158, 53);
+            openChatButton.TabIndex = 1;
+            openChatButton.Text = "Открыть чат с пользователем";
+            openChatButton.UseVisualStyleBackColor = false;
+            openChatButton.Click += openChatButton_Click;
             // 
             // loadInfoButton
             // 
-            this.loadInfoButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
-            this.loadInfoButton.Font = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
-            this.loadInfoButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.loadInfoButton.Location = new System.Drawing.Point(176, 12);
-            this.loadInfoButton.Name = "loadInfoButton";
-            this.loadInfoButton.Size = new System.Drawing.Size(156, 53);
-            this.loadInfoButton.TabIndex = 1;
-            this.loadInfoButton.Text = "Загрузить информацию о пользователе";
-            this.loadInfoButton.UseVisualStyleBackColor = false;
+            loadInfoButton.BackColor = Color.FromArgb(192, 64, 0);
+            loadInfoButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point);
+            loadInfoButton.ForeColor = SystemColors.ButtonHighlight;
+            loadInfoButton.Location = new Point(176, 12);
+            loadInfoButton.Name = "loadInfoButton";
+            loadInfoButton.Size = new Size(156, 53);
+            loadInfoButton.TabIndex = 1;
+            loadInfoButton.Text = "Загрузить информацию о пользователе";
+            loadInfoButton.UseVisualStyleBackColor = false;
             // 
             // infoGroupBox
             // 
-            this.infoGroupBox.BackColor = System.Drawing.Color.DarkSlateGray;
-            this.infoGroupBox.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.infoGroupBox.ForeColor = System.Drawing.Color.White;
-            this.infoGroupBox.Location = new System.Drawing.Point(338, 12);
-            this.infoGroupBox.Name = "infoGroupBox";
-            this.infoGroupBox.Size = new System.Drawing.Size(578, 451);
-            this.infoGroupBox.TabIndex = 2;
-            this.infoGroupBox.TabStop = false;
-            this.infoGroupBox.Text = "Информация";
+            infoGroupBox.BackColor = Color.DarkSlateGray;
+            infoGroupBox.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            infoGroupBox.ForeColor = Color.White;
+            infoGroupBox.Location = new Point(338, 12);
+            infoGroupBox.Name = "infoGroupBox";
+            infoGroupBox.Size = new Size(578, 451);
+            infoGroupBox.TabIndex = 2;
+            infoGroupBox.TabStop = false;
+            infoGroupBox.Text = "Информация";
             // 
             // stopAllMatchButton
             // 
-            this.stopAllMatchButton.BackColor = System.Drawing.Color.Brown;
-            this.stopAllMatchButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.stopAllMatchButton.Location = new System.Drawing.Point(6, 32);
-            this.stopAllMatchButton.Name = "stopAllMatchButton";
-            this.stopAllMatchButton.Size = new System.Drawing.Size(94, 58);
-            this.stopAllMatchButton.TabIndex = 3;
-            this.stopAllMatchButton.Text = "Остановить все матчи";
-            this.stopAllMatchButton.UseVisualStyleBackColor = false;
+            stopAllMatchButton.BackColor = Color.Brown;
+            stopAllMatchButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            stopAllMatchButton.Location = new Point(6, 32);
+            stopAllMatchButton.Name = "stopAllMatchButton";
+            stopAllMatchButton.Size = new Size(94, 58);
+            stopAllMatchButton.TabIndex = 3;
+            stopAllMatchButton.Text = "Остановить все матчи";
+            stopAllMatchButton.UseVisualStyleBackColor = false;
             // 
             // matchInfoLabel
             // 
-            this.matchInfoLabel.AutoSize = true;
-            this.matchInfoLabel.BackColor = System.Drawing.Color.LimeGreen;
-            this.matchInfoLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.matchInfoLabel.Location = new System.Drawing.Point(348, 487);
-            this.matchInfoLabel.Name = "matchInfoLabel";
-            this.matchInfoLabel.Size = new System.Drawing.Size(11, 13);
-            this.matchInfoLabel.TabIndex = 4;
-            this.matchInfoLabel.Text = "-";
+            matchInfoLabel.BackColor = Color.DarkOliveGreen;
+            matchInfoLabel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            matchInfoLabel.ForeColor = SystemColors.Control;
+            matchInfoLabel.Location = new Point(338, 469);
+            matchInfoLabel.Name = "matchInfoLabel";
+            matchInfoLabel.Size = new Size(180, 174);
+            matchInfoLabel.TabIndex = 4;
+            matchInfoLabel.Text = "-";
+            matchInfoLabel.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // buttonGroupBox
             // 
-            this.buttonGroupBox.BackColor = System.Drawing.Color.SeaGreen;
-            this.buttonGroupBox.Controls.Add(this.saveAllButton);
-            this.buttonGroupBox.Controls.Add(this.clearMessageDBButton);
-            this.buttonGroupBox.Controls.Add(this.stopAllMatchButton);
-            this.buttonGroupBox.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.buttonGroupBox.ForeColor = System.Drawing.Color.White;
-            this.buttonGroupBox.Location = new System.Drawing.Point(524, 469);
-            this.buttonGroupBox.Name = "buttonGroupBox";
-            this.buttonGroupBox.Size = new System.Drawing.Size(392, 174);
-            this.buttonGroupBox.TabIndex = 3;
-            this.buttonGroupBox.TabStop = false;
-            this.buttonGroupBox.Text = "Кнопки управления";
+            buttonGroupBox.BackColor = Color.SeaGreen;
+            buttonGroupBox.Controls.Add(saveAllButton);
+            buttonGroupBox.Controls.Add(clearMessageDBButton);
+            buttonGroupBox.Controls.Add(stopAllMatchButton);
+            buttonGroupBox.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
+            buttonGroupBox.ForeColor = Color.White;
+            buttonGroupBox.Location = new Point(524, 469);
+            buttonGroupBox.Name = "buttonGroupBox";
+            buttonGroupBox.Size = new Size(392, 174);
+            buttonGroupBox.TabIndex = 3;
+            buttonGroupBox.TabStop = false;
+            buttonGroupBox.Text = "Кнопки управления";
             // 
             // saveAllButton
             // 
-            this.saveAllButton.BackColor = System.Drawing.Color.Brown;
-            this.saveAllButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.saveAllButton.Location = new System.Drawing.Point(288, 32);
-            this.saveAllButton.Name = "saveAllButton";
-            this.saveAllButton.Size = new System.Drawing.Size(94, 58);
-            this.saveAllButton.TabIndex = 3;
-            this.saveAllButton.Text = "Сохранить всё";
-            this.saveAllButton.UseVisualStyleBackColor = false;
+            saveAllButton.BackColor = Color.Brown;
+            saveAllButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            saveAllButton.Location = new Point(288, 32);
+            saveAllButton.Name = "saveAllButton";
+            saveAllButton.Size = new Size(94, 58);
+            saveAllButton.TabIndex = 3;
+            saveAllButton.Text = "Сохранить всё";
+            saveAllButton.UseVisualStyleBackColor = false;
             // 
             // clearMessageDBButton
             // 
-            this.clearMessageDBButton.BackColor = System.Drawing.Color.Brown;
-            this.clearMessageDBButton.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.clearMessageDBButton.Location = new System.Drawing.Point(106, 32);
-            this.clearMessageDBButton.Name = "clearMessageDBButton";
-            this.clearMessageDBButton.Size = new System.Drawing.Size(176, 58);
-            this.clearMessageDBButton.TabIndex = 3;
-            this.clearMessageDBButton.Text = "Удалить все сохраненные сообщения";
-            this.clearMessageDBButton.UseVisualStyleBackColor = false;
+            clearMessageDBButton.BackColor = Color.Brown;
+            clearMessageDBButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            clearMessageDBButton.Location = new Point(106, 32);
+            clearMessageDBButton.Name = "clearMessageDBButton";
+            clearMessageDBButton.Size = new Size(176, 58);
+            clearMessageDBButton.TabIndex = 3;
+            clearMessageDBButton.Text = "Удалить все сохраненные сообщения";
+            clearMessageDBButton.UseVisualStyleBackColor = false;
+            // 
+            // updateTimer
+            // 
+            updateTimer.Enabled = true;
+            updateTimer.Interval = 200;
+            updateTimer.Tick += updateTimer_Tick;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.MintCream;
-            this.ClientSize = new System.Drawing.Size(928, 659);
-            this.Controls.Add(this.buttonGroupBox);
-            this.Controls.Add(this.matchInfoLabel);
-            this.Controls.Add(this.infoGroupBox);
-            this.Controls.Add(this.loadInfoButton);
-            this.Controls.Add(this.openChatButton);
-            this.Controls.Add(this.userIdListBox);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Name = "MainForm";
-            this.Text = "Окно администрирования";
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.buttonGroupBox.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.MintCream;
+            ClientSize = new Size(928, 659);
+            Controls.Add(buttonGroupBox);
+            Controls.Add(matchInfoLabel);
+            Controls.Add(infoGroupBox);
+            Controls.Add(loadInfoButton);
+            Controls.Add(openChatButton);
+            Controls.Add(userIdListBox);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            Name = "MainForm";
+            Text = "Окно администрирования";
+            Load += MainForm_Load;
+            buttonGroupBox.ResumeLayout(false);
+            ResumeLayout(false);
         }
 
         #endregion
@@ -182,5 +189,6 @@
         private GroupBox buttonGroupBox;
         private Button saveAllButton;
         private Button clearMessageDBButton;
+        private System.Windows.Forms.Timer updateTimer;
     }
 }
