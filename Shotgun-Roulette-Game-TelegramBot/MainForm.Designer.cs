@@ -36,8 +36,11 @@
             stopAllMatchButton = new Button();
             matchInfoLabel = new Label();
             buttonGroupBox = new GroupBox();
+            usersBannedRadioButton = new RadioButton();
+            usersRadioButton = new RadioButton();
             saveAllButton = new Button();
             clearMessageDBButton = new Button();
+            banUserButton = new Button();
             updateTimer = new System.Windows.Forms.Timer(components);
             buttonGroupBox.SuspendLayout();
             SuspendLayout();
@@ -117,8 +120,11 @@
             // buttonGroupBox
             // 
             buttonGroupBox.BackColor = Color.SeaGreen;
+            buttonGroupBox.Controls.Add(usersBannedRadioButton);
+            buttonGroupBox.Controls.Add(usersRadioButton);
             buttonGroupBox.Controls.Add(saveAllButton);
             buttonGroupBox.Controls.Add(clearMessageDBButton);
+            buttonGroupBox.Controls.Add(banUserButton);
             buttonGroupBox.Controls.Add(stopAllMatchButton);
             buttonGroupBox.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             buttonGroupBox.ForeColor = Color.White;
@@ -128,6 +134,30 @@
             buttonGroupBox.TabIndex = 3;
             buttonGroupBox.TabStop = false;
             buttonGroupBox.Text = "Кнопки управления";
+            // 
+            // usersBannedRadioButton
+            // 
+            usersBannedRadioButton.AutoSize = true;
+            usersBannedRadioButton.Location = new Point(193, 96);
+            usersBannedRadioButton.Name = "usersBannedRadioButton";
+            usersBannedRadioButton.Size = new Size(189, 29);
+            usersBannedRadioButton.TabIndex = 4;
+            usersBannedRadioButton.Text = "Заблокированные";
+            usersBannedRadioButton.UseVisualStyleBackColor = true;
+            usersBannedRadioButton.CheckedChanged += usersBannedRadioButton_CheckedChanged;
+            // 
+            // usersRadioButton
+            // 
+            usersRadioButton.AutoSize = true;
+            usersRadioButton.Checked = true;
+            usersRadioButton.Location = new Point(6, 96);
+            usersRadioButton.Name = "usersRadioButton";
+            usersRadioButton.Size = new Size(153, 29);
+            usersRadioButton.TabIndex = 4;
+            usersRadioButton.TabStop = true;
+            usersRadioButton.Text = "Пользователи";
+            usersRadioButton.UseVisualStyleBackColor = true;
+            usersRadioButton.CheckedChanged += usersRadioButton_CheckedChanged;
             // 
             // saveAllButton
             // 
@@ -139,6 +169,7 @@
             saveAllButton.TabIndex = 3;
             saveAllButton.Text = "Сохранить всё";
             saveAllButton.UseVisualStyleBackColor = false;
+            saveAllButton.Click += saveAllButton_Click;
             // 
             // clearMessageDBButton
             // 
@@ -150,6 +181,19 @@
             clearMessageDBButton.TabIndex = 3;
             clearMessageDBButton.Text = "Удалить все сохраненные сообщения";
             clearMessageDBButton.UseVisualStyleBackColor = false;
+            clearMessageDBButton.Click += clearMessageDBButton_Click;
+            // 
+            // banUserButton
+            // 
+            banUserButton.BackColor = Color.Brown;
+            banUserButton.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            banUserButton.Location = new Point(6, 126);
+            banUserButton.Name = "banUserButton";
+            banUserButton.Size = new Size(125, 42);
+            banUserButton.TabIndex = 3;
+            banUserButton.Text = "Заблокировать";
+            banUserButton.UseVisualStyleBackColor = false;
+            banUserButton.Click += banUserButton_Click;
             // 
             // updateTimer
             // 
@@ -175,6 +219,7 @@
             Text = "Окно администрирования";
             Load += MainForm_Load;
             buttonGroupBox.ResumeLayout(false);
+            buttonGroupBox.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -190,5 +235,8 @@
         private Button saveAllButton;
         private Button clearMessageDBButton;
         private System.Windows.Forms.Timer updateTimer;
+        private RadioButton usersBannedRadioButton;
+        private RadioButton usersRadioButton;
+        private Button banUserButton;
     }
 }

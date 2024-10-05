@@ -14,6 +14,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
         public string FirstName = null!;
         public string NickName = null!;
         public Int64 UserId;
+        public bool IsBanned;
 
         public List<string> Messages = new List<string>();
 

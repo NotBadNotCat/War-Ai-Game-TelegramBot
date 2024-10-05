@@ -5,6 +5,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
         public MainForm()
         {
             InitializeComponent();
+            Storage.LoadUsers();
             TelegramBot.StartTelegramBot();
             Directory.CreateDirectory("logs");
         }
@@ -16,44 +17,104 @@ namespace Shotgun_Roulette_Game_TelegramBot
 
         private void openChatButton_Click(object sender, EventArgs e)
         {
-
+            if (userIdListBox.SelectedItem != null)
+            {
+                ChatForm chatForm = new ChatForm(Convert.ToInt64(userIdListBox.SelectedItem));
+                chatForm.Show();
+            }
         }
 
         private void updateTimer_Tick(object sender, EventArgs e)
         {
             if (Storage.Users.Count > 0)
             {
-                if (userIdListBox.Items.Count != Storage.Users.Count)
+                if (usersRadioButton.Checked)
                 {
-                    userIdListBox.Items.Clear();
                     foreach (var user in Storage.Users)
                     {
-                        userIdListBox.Items.Add(user.Key);
+                        if (!userIdListBox.Items.Contains(user.Key))
+                            userIdListBox.Items.Add(user.Key);
+                    }
+                }
+                if (usersBannedRadioButton.Checked)
+                {
+                    foreach (var user in Storage.Users)
+                    {
+                        if (user.Value.IsBanned)
+                            if (!userIdListBox.Items.Contains(user.Key))
+                                userIdListBox.Items.Add(user.Key);
                     }
                 }
                 int countUserInOnlineGame = 0;
                 int countUserInSandbox = 0;
                 int countUserInSearchGame = 0;
-                int countOfflineUser = 0;
+                int countOfflineUsers = 0;
+                int countBannedUsers = 0;
 
                 foreach (var user in Storage.Users)
                 {
-                    if(user.Value.InOnlineGame)
+                    if (user.Value.InOnlineGame)
                         countUserInOnlineGame++;
-                    else if(user.Value.InSandbox)
+                    else if (user.Value.InSandbox)
                         countUserInSandbox++;
-                    else if(user.Value.InSearchGame)
+                    else if (user.Value.InSearchGame)
                         countUserInSearchGame++;
+                    else if (user.Value.IsBanned)
+                        countBannedUsers++;
                     else
-                        countOfflineUser++;
+                        countOfflineUsers++;
                 }
                 matchInfoLabel.Text = $"В поиске игры: {countUserInSearchGame}\n" +
                     $"В игре: {countUserInOnlineGame}\n" +
                     $"В песочнице: {countUserInSandbox}\n" +
-                    $"Не активны: {countOfflineUser}\n" +
+                    $"Не активны: {countOfflineUsers}\n" +
+                    $"В бане: {countBannedUsers}\n" +
                     $"\nВсего: {Storage.Users.Count}";
             }
 
+        }
+
+        private void usersRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            banUserButton.BackColor = Color.Brown;
+            banUserButton.Text = "Заблокировать";
+            userIdListBox.Items.Clear();
+        }
+
+        private void usersBannedRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            banUserButton.BackColor = Color.DarkGreen;
+            banUserButton.Text = "Разблокировать";
+            userIdListBox.Items.Clear();
+        }
+
+        private void banUserButton_Click(object sender, EventArgs e)
+        {
+            if (usersRadioButton.Checked)
+                if (userIdListBox.SelectedItem != null)
+                {
+                    Storage.Users[Convert.ToInt64(userIdListBox.SelectedItem)].IsBanned = true;
+                }
+            if (usersBannedRadioButton.Checked)
+                if (userIdListBox.SelectedItem != null)
+                {
+                    Storage.Users[Convert.ToInt64(userIdListBox.SelectedItem)].IsBanned = false;
+                    TelegramBot.SendMessage(Storage.Users[Convert.ToInt64(userIdListBox.SelectedItem)], "\U0001F6A8Ты *разбанен*!\U00002705");
+                }
+        }
+
+        private void saveAllButton_Click(object sender, EventArgs e)
+        {
+            Storage.SaveUsers();
+        }
+
+        private void clearMessageDBButton_Click(object sender, EventArgs e)
+        {
+            foreach (var user in Storage.Users)
+            {
+                user.Value.Messages.Clear();
+            }
+        
         }
     }
 }

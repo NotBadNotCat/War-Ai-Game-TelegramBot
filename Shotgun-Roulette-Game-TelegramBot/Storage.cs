@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Shotgun_Roulette_Game_TelegramBot
 {
@@ -33,30 +36,70 @@ namespace Shotgun_Roulette_Game_TelegramBot
                 return false;
             }
         }
-        public static string GetAnswerToMessage(string message, bool isNewUser = false)
+        public static string GetAnswerToMessage(string message, bool isNewUser = false, Int64 userId = 0)
         {
             if (message == "/start" && isNewUser)
                 return $"\U0001F389*Добро пожаловать* в бота\n*Shotgun Roulette*\U00002757\n\n" +
                     "_Прочитайте правила._";
 
-            else if (message == "/start" && !isNewUser)
-                return "\U0001F3AF*Выберите действие!*";
+            else if ((message == "/start" || message == "/s") && !isNewUser)
+                return "\U0001F3AF*Выберите действие.*";
 
-            else if (message == "/game")
-                return "";
+            else if (message == "/game" || message == "/g")
+                return "*\U0001F6A9Выберите режим игры.*";
 
-            else if (message == "/rules")
-                return "";
+            else if (message == "/search" || message == "/src")
+                return "\U0000231B*Идёт поиск игроков!*\U0001F50D\n_Если вы хотите отменить поиск, то воспользуйтесь_ */stop*.";
 
-            else if (message == "/statistics")
-                return "";
+            else if (message == "/rules" || message == "/r")
+            {
+                return "\U00002753*Как играть:*\U00002753\r\n\r\n" +
+                    "_1._*Обычный режим:*\r\n" +
+                    "Все очень просто, убей или будь убитым! " +
+                    "На столе лежит дробовик, заряженный патронами, " +
+                    "ещё на столе лежит пять карт способностей и счётчик жизни. \r\n\r\n" +
+                    "Сначала вам предстоит выбрать какую карту использовать, " +
+                    "а затем вы берете дробовик в руки и выбираете в кого выстрелить, " +
+                    "в себя или в противника. Выбор выстрелить в себя нужен, " +
+                    "так как вы не знаете, что противник мог сделать с дробовиком. \r\n\r\n" +
+                    "У вас, как и у вашего противника, изначально *4* жизни, " +
+                    "тот чьи жизни закончатся первым проиграет. " +
+                    "_За поражение забирают столько очков сколько выиграл противник_. " +
+                    "За победу очки выдаются за риск, " +
+                    "очки тут называются *Playing Chips* или же просто *C*! \r\n" +
+                    "Баллы риска дают за ваши действия, например если вы выстрелите в себя, " +
+                    "то вам дадут больше баллов риска чем если вы выстрелите в противника. " +
+                    "_Сколько баллов риска вы получите столько и очков вам дадут за победу_!\r\n\r\n" +
+                    "*Риском считается:*\r\n" +
+                    "_•Выбрать пустую карту._ *(+4C)*\r\n" +
+                    "_•Выстрелить в себя._ *(+3C)*\r\n" +
+                    "_•Использование карты ОСЕЧКА._ *(+2C)*\r\n" +
+                    "_•Ход при низком (при одном или двум) количестве жизней._ *(+2C)*\r\n" +
+                    "_•Победа при большом количестве жизней._ *(+3C)*\r\n" +
+                    "_•Остальное даёт малый плюс к риску._ *(+1C)*\r\n\r\n" +
+                    "♯Если ваш противник будет долго думать, " +
+                    "то вы можете пропустить ход командой */skip*!\r\n" +
+                    "♯Если же вы хотите сдастся, то можете просто покинут матч командой */exit*. За это вы *получите штраф!*\r\n" +
+                    "♯Таблицу лидеров можно посмотреть командой */top*!\r\n\r\n" +
+                    "_2._*Песочница:*\r\n" +
+                    "Тут вы просто можете протестировать карты.\r\n" +
+                    "За выход вы нечего *не теряете*. Чтобы выйти пропишите команду */exit*!\r\n";
+            }
+
+            else if (message == "/statistics" || message == "/st")
+            {
+                if (userId != 0)
+                    return $"Статистика *{Users[userId].FirstName}*: _{Users[userId].Points}_*C*";
+                else
+                    return "";
+            }
 
             else if (message == "/top")
             {
                 List<User> usersToSort = new List<User>();
                 string text = "\U0001F4E2*Топ* _20_ *игроков:*\n\n";
                 if (Users.ContainsKey(1932903539))
-                    text += $"\U00002728*Создатель* [NeVova](https://github.com/NotBadNotCat): *{ Users[1932903539].Points}С*\n\n";
+                    text += $"\U00002728*Создатель* [NeVova](https://github.com/NotBadNotCat): *{Users[1932903539].Points}С*\n\n";
                 else
                     text += $"\U00002728*Создатель:* [NeVova](https://github.com/NotBadNotCat): *-------С*\n\n";
 
@@ -93,21 +136,101 @@ namespace Shotgun_Roulette_Game_TelegramBot
                 return text;
             }
 
-            else if (message == "/help")
-                return "";
+            else if (message == "/help" || message == "/h")
+            {
+                string text = "\U0001F527*Команды бота:*\n\n" +
+                    "*♯Обычные:*\r\n" +
+                    "*•/start* или /s _- выводит стартовое меню выбора_*.*\r\n" +
+                    "*•/rules* или /r _- выводит правила игры_*.*\r\n" +
+                    "*•/game* или /g _- выводит меню выбора режим игры_*.*\r\n" +
+                    "*•/search* или /src _-Запускает поиск игроков в онлайн режиме_*.*\r\n" +
+                    "*•/statistics* или /st _- выводит вашу статистику_*.*\r\n" +
+                    "*•/top* _- выводит таблицу лидеров_*.*\r\n" +
+                    "*•/help* или /h _– выводит все команды бота_*.*\r\n\r\n" +
+                    "*♯В поиске игроков:*\r\n" +
+                    "*•/stop* _- останавливает поиск игроков_*.*\r\n\r\n" +
+                    "*♯В игре:*\r\n" +
+                    "*•/exit* _– покинуть матч. Но за это будет начислен_ *штраф!*\r\n" +
+                    "*•/skip* _– пропустить ход противника, если он ходит дольше 20 секунд_*!*\r\n" +
+                    "*•/message (текст)* или /msg (текст) _– отправить сообщение противнику_*.*\r\n\r\n" +
+                    "*♯В песочнице:*\r\n" +
+                    "*•/exit* _– выйти из песочницы. Штрафа_ *не* _будет_*!*\r\n";
+
+                return text;
+            }
 
             else if (message == "/stop")
                 return "\U000026D4*Вы не в поиске матча!*\nВведите /start.";
 
-            else if (message == "/exit")
+            else if (message == "/exit" || message.Contains("/message") || message.Contains("/msg"))
                 return "\U000026D4*Вы не в матче!*\nВведите /start.";
 
             else if (message.Contains("/"))
-                return "\U000026D4*Такой команды нет!*\nЧтобы узнать все существующие команды бота пропишите /help.";
+                return "\U000026D4*Такой команды нет!*\nЧтобы узнать все существующие команды бота воспользуйтесь /help.";
 
             else
                 return "\U000026D4*Вы ввели некорректное сообщение!*\nВведите /start.";
         }
-
+        public static InlineKeyboardMarkup GetKeyboardMarkup(string callbackQueryId, bool isNewUser = false)
+        {
+            switch (callbackQueryId)
+            {
+                case "/start":
+                    {
+                        var kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0001F3AEИграть", "Multiplayer")
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0001F4D6Правила", "Rules")
+                        }});
+                        
+                        if (isNewUser)
+                        {
+                            kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
+                            new[]
+                            {
+                            InlineKeyboardButton.WithCallbackData("\U0001F4D6Правила", "Rules")
+                            } });
+                            return kbrd;
+                        }
+                        else
+                        {
+                            return kbrd;
+                        }
+                    }
+                case "/game":
+                case "/g":
+                    {
+                        var kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0001F30DИграть против игроков", "Multiplayer")
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0001F3D6Песочница", "Sandbox")
+                        }});
+                        return kbrd;
+                    }
+                default:
+                    {
+                        return null!;
+                    }
+            }
+        }
+        public static void SaveUsers()
+        {
+            Directory.CreateDirectory("db");
+            string jsonString = JsonConvert.SerializeObject(Users);
+            System.IO.File.WriteAllText($"db\\save.json", jsonString);
+        }
+        public static void LoadUsers()
+        {
+            if (File.Exists($"db\\save.json"))
+                Users = JsonConvert.DeserializeObject<Dictionary<Int64, User>>(File.ReadAllText("db\\save.json"))!;
+        }
     }
 }

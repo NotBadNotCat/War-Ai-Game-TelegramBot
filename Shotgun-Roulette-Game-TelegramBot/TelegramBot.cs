@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Shotgun_Roulette_Game_TelegramBot
 {
@@ -29,32 +30,49 @@ namespace Shotgun_Roulette_Game_TelegramBot
             {
                 Int64 chatId = update.CallbackQuery.Message.Chat.Id;
 
-                Storage.UserExsistCheckAndWrite(chatId, update.Message.Chat.FirstName, update.Message.Chat.Username);
-                Storage.Users[chatId].Messages.Add($"#Click = {update.CallbackQuery.Message}#");
+                Storage.UserExsistCheckAndWrite(chatId, update.CallbackQuery.From.FirstName, update.CallbackQuery.From.Username);
+
+                if (Storage.Users[chatId].IsBanned)
+                {
+                    SendMessage(Storage.Users[chatId], "\U0001F6A8Ты *забанен*!\U0001F6AB");
+                }
+                else
+                {
+                    Storage.Users[chatId].Messages.Add($"#Click = {update.CallbackQuery.Data}#");
+                }
             }
             else if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
                 Int64 chatId = update.Message.Chat.Id;
-                string messageText = update.Message.Text;
 
-                bool isNewUser = !Storage.UserExsistCheckAndWrite(chatId, update.Message.Chat.FirstName, update.Message.Chat.Username);
-                Storage.Users[chatId].Messages.Add(messageText);
-
-                if (Storage.Users[chatId].InSearchGame)
+                bool isNewUser = !Storage.UserExsistCheckAndWrite(chatId, update.Message.From.FirstName, update.Message.From.Username);
+                
+                if (Storage.Users[chatId].IsBanned)
                 {
-
-                }
-                else if (Storage.Users[chatId].InOnlineGame)
-                {
-
-                }
-                else if (Storage.Users[chatId].InSandbox)
-                {
-
+                    SendMessage(Storage.Users[chatId], "\U0001F6A8Ты *забанен*!\U0001F6AB");
                 }
                 else
                 {
-                    SendMessage(Storage.Users[chatId], Storage.GetAnswerToMessage(messageText, isNewUser));
+                    string messageText = update.Message.Text;
+
+                    Storage.Users[chatId].Messages.Add(messageText);
+
+                    if (Storage.Users[chatId].InSearchGame)
+                    {
+
+                    }
+                    else if (Storage.Users[chatId].InOnlineGame)
+                    {
+
+                    }
+                    else if (Storage.Users[chatId].InSandbox)
+                    {
+
+                    }
+                    else
+                    {
+                        SendMessage(Storage.Users[chatId], Storage.GetAnswerToMessage(messageText, isNewUser, userId: chatId), replyMarkup: Storage.GetKeyboardMarkup(messageText, isNewUser));
+                    }
                 }
             }
             else
@@ -64,19 +82,24 @@ namespace Shotgun_Roulette_Game_TelegramBot
                 Storage.UserExsistCheckAndWrite(chatId, update.Message.Chat.FirstName, update.Message.Chat.Username);
                 Storage.Users[chatId].Messages.Add("#Wrong_Format_Message#");
 
-                SendMessage(Storage.Users[chatId], "К сожалению, бот не умеет обрабатывать сообщения данного формата, но не переживайте мы его сохраним в реестр сообщений!!!\n\nНапишите /start чтобы пользоваться ботом!");
+                SendMessage(Storage.Users[chatId], "\U000026D4_К сожалению, бот " +
+                    "не умеет обрабатывать сообщения данного формата, " +
+                    "но не переживайте мы его сохраним в реестр сообщений_*!!!*\n\n" +
+                    "Напишите */start* чтобы пользоваться ботом*!*");
             }
         }
+
         public enum MessageId
         {
             None = 0,
             Save = 1
         }
-        public async static void SendMessage(User user, string text, MessageId messageId = MessageId.None)
+
+        public async static void SendMessage(User user, string text, MessageId messageId = MessageId.None, InlineKeyboardMarkup replyMarkup = null!)
         {
             try
             {
-                await BotClient!.SendTextMessageAsync(user.UserId, text, parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown, disableWebPagePreview: true);
+                await BotClient!.SendTextMessageAsync(user.UserId, text, parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown, disableWebPagePreview: true, replyMarkup: replyMarkup);
             }
             catch (Exception ex)
             {

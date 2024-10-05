@@ -28,15 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             label1 = new Label();
             label2 = new Label();
             userMessageListBox = new ListBox();
             botMessageListBox = new ListBox();
-            MessageTextBox = new TextBox();
+            messageTextBox = new TextBox();
             sendButton = new Button();
             button1 = new Button();
             seeFullMessageButton = new Button();
             pictureBox1 = new PictureBox();
+            updateTimer = new System.Windows.Forms.Timer(components);
+            clearUserMessagesButton = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -87,13 +90,13 @@
             botMessageListBox.Size = new Size(278, 284);
             botMessageListBox.TabIndex = 1;
             // 
-            // MessageTextBox
+            // messageTextBox
             // 
-            MessageTextBox.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            MessageTextBox.Location = new Point(23, 346);
-            MessageTextBox.Name = "MessageTextBox";
-            MessageTextBox.Size = new Size(561, 29);
-            MessageTextBox.TabIndex = 2;
+            messageTextBox.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            messageTextBox.Location = new Point(23, 346);
+            messageTextBox.Name = "messageTextBox";
+            messageTextBox.Size = new Size(561, 29);
+            messageTextBox.TabIndex = 2;
             // 
             // sendButton
             // 
@@ -106,6 +109,7 @@
             sendButton.TabIndex = 3;
             sendButton.Text = "Отправить";
             sendButton.UseVisualStyleBackColor = false;
+            sendButton.Click += sendButton_Click;
             // 
             // button1
             // 
@@ -118,6 +122,7 @@
             button1.TabIndex = 3;
             button1.Text = "C";
             button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // seeFullMessageButton
             // 
@@ -130,6 +135,7 @@
             seeFullMessageButton.TabIndex = 3;
             seeFullMessageButton.Text = "Развернуть";
             seeFullMessageButton.UseVisualStyleBackColor = false;
+            seeFullMessageButton.Click += seeFullMessageButton_Click;
             // 
             // pictureBox1
             // 
@@ -140,21 +146,43 @@
             pictureBox1.TabIndex = 4;
             pictureBox1.TabStop = false;
             // 
+            // updateTimer
+            // 
+            updateTimer.Enabled = true;
+            updateTimer.Interval = 200;
+            updateTimer.Tick += updateTimer_Tick;
+            // 
+            // clearUserMessagesButton
+            // 
+            clearUserMessagesButton.BackColor = Color.PaleTurquoise;
+            clearUserMessagesButton.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            clearUserMessagesButton.Location = new Point(279, 56);
+            clearUserMessagesButton.Name = "clearUserMessagesButton";
+            clearUserMessagesButton.Size = new Size(69, 22);
+            clearUserMessagesButton.TabIndex = 5;
+            clearUserMessagesButton.Text = "Очистить";
+            clearUserMessagesButton.UseVisualStyleBackColor = false;
+            clearUserMessagesButton.Click += clearUserMessagesButton_Click;
+            // 
             // ChatForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.MintCream;
             ClientSize = new Size(646, 436);
+            Controls.Add(clearUserMessagesButton);
             Controls.Add(button1);
             Controls.Add(seeFullMessageButton);
             Controls.Add(sendButton);
-            Controls.Add(MessageTextBox);
+            Controls.Add(messageTextBox);
             Controls.Add(label1);
             Controls.Add(botMessageListBox);
             Controls.Add(userMessageListBox);
             Controls.Add(label2);
             Controls.Add(pictureBox1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "ChatForm";
             Text = "Чат";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -168,10 +196,12 @@
         private Label label2;
         private ListBox userMessageListBox;
         private ListBox botMessageListBox;
-        private TextBox MessageTextBox;
+        private TextBox messageTextBox;
         private Button sendButton;
         private Button button1;
         private Button seeFullMessageButton;
         private PictureBox pictureBox1;
+        private System.Windows.Forms.Timer updateTimer;
+        private Button clearUserMessagesButton;
     }
 }
