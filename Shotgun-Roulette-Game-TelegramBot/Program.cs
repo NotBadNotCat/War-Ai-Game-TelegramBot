@@ -11,6 +11,9 @@ namespace Shotgun_Roulette_Game_TelegramBot
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+            Storage.LoadUsers();
+            TelegramBot.StartTelegramBot();
+            Directory.CreateDirectory("logs");
             Application.Run(new MainForm());
         }
     }

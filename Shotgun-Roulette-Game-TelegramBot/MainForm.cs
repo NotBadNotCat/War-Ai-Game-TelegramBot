@@ -5,9 +5,6 @@ namespace Shotgun_Roulette_Game_TelegramBot
         public MainForm()
         {
             InitializeComponent();
-            Storage.LoadUsers();
-            TelegramBot.StartTelegramBot();
-            Directory.CreateDirectory("logs");
         }
 
         private void MainForm_Load(object sender, EventArgs e)
