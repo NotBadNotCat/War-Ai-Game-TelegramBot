@@ -22,7 +22,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
 
         private void updateTimer_Tick(object sender, EventArgs e)
         {
-            if (userMessageListBox.Items.Count != Storage.Users[UserId].Messages.Count && Storage.Users[UserId].Messages.Count > userMessageListBox.Items.Count)
+            if (userMessageListBox.Items.Count != Storage.Users[UserId].Messages.Count && Storage.Users[UserId].Messages.Count > userMessageListBox.Items.Count && Storage.Users[UserId].Messages.Count != 0)
             {
                 userMessageListBox.Items.Clear();
                 foreach (var message in Storage.Users[UserId].Messages)

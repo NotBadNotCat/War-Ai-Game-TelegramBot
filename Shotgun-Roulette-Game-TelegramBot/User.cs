@@ -9,19 +9,35 @@ namespace Shotgun_Roulette_Game_TelegramBot
     internal class User
     {
         public User(Int64 userId, string firstName, string nickName) 
-        { UserId = userId; FirstName = firstName; NickName = nickName; }
+        { Id = userId; FirstName = firstName; NickName = nickName; }
 
+        public Int64 Id;
         public string FirstName = null!;
         public string NickName = null!;
-        public Int64 UserId;
-        public bool IsBanned;
 
+        public List<int> BotMessagesId = new List<int>();
         public List<string> Messages = new List<string>();
 
-        public int Points = 0;
-
+        public bool IsBanned;
         public bool InOnlineGame;
         public bool InSandbox;
         public bool InSearchGame;
+
+        public int Points = 0;
+        public int Score = 0;
+
+        public Int64 EnemyId;
+        public bool IsPlayerMove;
+        public int ShotGunDamage = 1;
+        public int HealthPoints = 4;
+        public List<string> SkillСards = new List<string>() { "Холостой.", "Осечка.", "Патрон.", "Аптечка.", "Усилитель" };
+        public void ReloadGamePoint()
+        {
+            EnemyId = 0;
+            IsPlayerMove = false;
+            ShotGunDamage = 1;
+            HealthPoints = 4;
+            SkillСards = new List<string>() { "Холостой.", "Осечка.", "Патрон.", "Аптечка.", "Усилитель" };
+        }
     }
 }

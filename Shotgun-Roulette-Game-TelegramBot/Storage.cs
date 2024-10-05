@@ -33,6 +33,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
             else
             {
                 Users.Add(userId, new User(userId, firstName, nickName));
+                SaveUsers();
                 return false;
             }
         }
@@ -49,7 +50,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
                 return "*\U0001F6A9Выберите режим игры.*";
 
             else if (message == "/search" || message == "/src")
-                return "\U0000231B*Идёт поиск игроков!*\U0001F50D\n_Если вы хотите отменить поиск, то воспользуйтесь_ */stop*.";
+                return "\U000026A0Вы хотите *начать поиск*\U00002753";
 
             else if (message == "/rules" || message == "/r")
             {
@@ -88,8 +89,26 @@ namespace Shotgun_Roulette_Game_TelegramBot
 
             else if (message == "/statistics" || message == "/st")
             {
-                if (userId != 0)
-                    return $"Статистика *{Users[userId].FirstName}*: _{Users[userId].Points}_*C*";
+                List<User> usersToSort = new List<User>();
+                int positionInTop = -1;
+
+                foreach (var user in Users)
+                        usersToSort.Add(user.Value);
+                if (usersToSort.Count > 0)
+                {
+                    usersToSort.Sort((u1, u2) => u1.Points.CompareTo(u2.Points));
+
+                    for (int i = 0; i < usersToSort.Count; i++)
+                        if (usersToSort[i].Id == userId)
+                        { 
+                            positionInTop = i + 1;
+                            break;
+                        }
+                }
+
+                    if (userId != 0)
+                    return $"\U0001F4CAСтатистика *{Users[userId].FirstName}*: _{Users[userId].Points}_*C*\n" +
+                        $"Вы: *{positionInTop}* в топе*!*";
                 else
                     return "";
             }
@@ -176,15 +195,16 @@ namespace Shotgun_Roulette_Game_TelegramBot
             switch (callbackQueryId)
             {
                 case "/start":
+                case "/s":
                     {
                         var kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
                         new[]
                         {
-                            InlineKeyboardButton.WithCallbackData("\U0001F3AEИграть", "Multiplayer")
+                            InlineKeyboardButton.WithCallbackData("\U0001F3AEИграть", "/game")
                         },
                         new[]
                         {
-                            InlineKeyboardButton.WithCallbackData("\U0001F4D6Правила", "Rules")
+                            InlineKeyboardButton.WithCallbackData("\U0001F4D6Правила", "/rules")
                         }});
                         
                         if (isNewUser)
@@ -192,7 +212,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
                             kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
                             new[]
                             {
-                            InlineKeyboardButton.WithCallbackData("\U0001F4D6Правила", "Rules")
+                            InlineKeyboardButton.WithCallbackData("\U0001F4D6Правила", "/rules")
                             } });
                             return kbrd;
                         }
@@ -207,11 +227,40 @@ namespace Shotgun_Roulette_Game_TelegramBot
                         var kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
                         new[]
                         {
-                            InlineKeyboardButton.WithCallbackData("\U0001F30DИграть против игроков", "Multiplayer")
+                            InlineKeyboardButton.WithCallbackData("\U0001F30DИграть против игроков", "/search")
                         },
                         new[]
                         {
                             InlineKeyboardButton.WithCallbackData("\U0001F3D6Песочница", "Sandbox")
+                        }});
+                        return kbrd;
+                    }
+                case "/rules":
+                case "/r":
+                    {
+                        var kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0001F3AEИграть", "/game")
+                        }});
+                        return kbrd;
+                    }
+                case "/search":
+                case "/src":
+                    {
+                        var kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U00002705Начать", "StartSearch")
+                        }});
+                        return kbrd;
+                    }
+                case "StartSearch":
+                    {
+                        var kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0000274CОстановить поиск", "StopSearch")
                         }});
                         return kbrd;
                     }
