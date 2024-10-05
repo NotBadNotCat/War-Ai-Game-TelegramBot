@@ -35,10 +35,27 @@ namespace Shotgun_Roulette_Game_TelegramBot
             else if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
                 Int64 chatId = update.Message.Chat.Id;
-                string massageText = update.Message.Text;
+                string messageText = update.Message.Text;
 
-                Storage.UserExsistCheckAndWrite(chatId, update.Message.Chat.FirstName, update.Message.Chat.Username);
-                Storage.Users[chatId].Messages.Add(massageText);
+                bool isNewUser = !Storage.UserExsistCheckAndWrite(chatId, update.Message.Chat.FirstName, update.Message.Chat.Username);
+                Storage.Users[chatId].Messages.Add(messageText);
+
+                if (Storage.Users[chatId].InSearchGame)
+                {
+
+                }
+                else if (Storage.Users[chatId].InOnlineGame)
+                {
+
+                }
+                else if (Storage.Users[chatId].InSandbox)
+                {
+
+                }
+                else
+                {
+                    SendMessage(Storage.Users[chatId], Storage.GetAnswerToMessage(messageText, isNewUser));
+                }
             }
             else
             {
@@ -59,7 +76,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
         {
             try
             {
-                await BotClient!.SendTextMessageAsync(user.UserId, text);
+                await BotClient!.SendTextMessageAsync(user.UserId, text, parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown, disableWebPagePreview: true);
             }
             catch (Exception ex)
             {

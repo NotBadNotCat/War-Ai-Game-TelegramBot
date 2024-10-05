@@ -17,6 +17,8 @@ namespace Shotgun_Roulette_Game_TelegramBot
 
         public List<string> Messages = new List<string>();
 
+        public int Points = 0;
+
         public bool InOnlineGame;
         public bool InSandbox;
         public bool InSearchGame;
