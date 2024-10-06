@@ -25,19 +25,23 @@ namespace Shotgun_Roulette_Game_TelegramBot
 
         public int Points = 0;
         public int Score = 0;
+        public List<int> MatchsStatistics = new List<int>();
 
         public Int64 EnemyId;
         public bool IsPlayerMove;
+        public DateTime LastMoveTime;
         public int ShotGunDamage = 1;
         public int HealthPoints = 4;
-        public List<string> SkillСards = new List<string>() { "Холостой.", "Осечка.", "Патрон.", "Аптечка.", "Усилитель" };
+        public List<string> SkillСards = new List<string>() { "BlankСartridge", "Reload", "MedicineBullet", "MedKit", "Amplifier" };
+
         public void ReloadGamePoint()
         {
             EnemyId = 0;
             IsPlayerMove = false;
             ShotGunDamage = 1;
             HealthPoints = 4;
-            SkillСards = new List<string>() { "Холостой.", "Осечка.", "Патрон.", "Аптечка.", "Усилитель" };
+            Score = 0;
+            SkillСards = new List<string>() { "BlankСartridge", "Reload", "MedicineBullet", "MedKit", "Amplifier" };
         }
     }
 }

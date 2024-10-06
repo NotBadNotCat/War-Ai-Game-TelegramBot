@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.ApplicationServices;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -63,19 +65,16 @@ namespace Shotgun_Roulette_Game_TelegramBot
                         string messageText = "";
                         switch (update.CallbackQuery.Data)
                         {
-                            case "/game":
-                                messageText = update.CallbackQuery.Data; SendMessage(Storage.Users[chatId], Storage.GetAnswerToMessage(messageText, userId: chatId), replyMarkup: Storage.GetKeyboardMarkup(messageText)); break;
-                            case "/rules":
-                                messageText = update.CallbackQuery.Data; SendMessage(Storage.Users[chatId], Storage.GetAnswerToMessage(messageText, userId: chatId), replyMarkup: Storage.GetKeyboardMarkup(messageText)); break;
+                            case "/start":
                             case "/search":
+                            case "/game":
+                            case "/rules":
+                            case "/top":
+                            case "/statistics":
                                 messageText = update.CallbackQuery.Data; SendMessage(Storage.Users[chatId], Storage.GetAnswerToMessage(messageText, userId: chatId), replyMarkup: Storage.GetKeyboardMarkup(messageText)); break;
                             case "StartSearch":
                                 {
-                                    SendMessage(Storage.Users[chatId], "\U0000231B*Идёт поиск игроков!*\U0001F50D\n" +
-                                        "_Если вы хотите отменить поиск, то воспользуйтесь_ */stop* " +
-                                        "_или нажмите_ *кнопку* _ниже_.",
-                                        replyMarkup: Storage.GetKeyboardMarkup(update.CallbackQuery.Data), saveMessageToBotMessageIdList: true);
-                                    StartSearch(Storage.Users[chatId]);
+                                    ShotgunGame.StartSearch(Storage.Users[chatId]);
                                     break;
                                 }
                             default:
@@ -113,7 +112,38 @@ namespace Shotgun_Roulette_Game_TelegramBot
                     }
                     else if (Storage.Users[chatId].InOnlineGame)
                     {
-
+                        if (messageText.Contains("/msg ") || messageText.Contains("/message "))
+                        {
+                            string text = "";
+                            for (int i = 0; i < messageText.Length; i++)
+                            {
+                                if (text != "")
+                                    text += messageText[i];
+                                else if (messageText[i] == ' ')
+                                    text += $"{Storage.Users[chatId].FirstName}: ";
+                            }
+                            EditMessage(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[Storage.Users[chatId].EnemyId].BotMessagesId[0],
+                                $"\U00002694_Ваш противник:_ *{Storage.Users[chatId].FirstName}*\n\U00002712*Сообщение:*\n*{text}*");
+                            EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[0],
+                                $"\U00002694_Ваш противник:_ *{Storage.Users[Storage.Users[chatId].EnemyId].FirstName}*\n\U00002705*Сообщение отправлено!*");
+                            DelitMessage(Storage.Users[chatId], update.Message.MessageId);
+                        }
+                        else if (messageText == "/exit")
+                        {
+                            Storage.Users[Storage.Users[chatId].EnemyId].Score += (Storage.Users[chatId].HealthPoints * 4);
+                            SendMessage(Storage.Users[Storage.Users[chatId].EnemyId], "\U0001F4A5*Противник застрелился!*\U0001F480");
+                            SendMessage(Storage.Users[chatId], "\U0001F4A5*Вы застрелились!*\U0001F480");
+                            ShotgunGame.WinGame(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[chatId]);
+                        }
+                        else
+                        {
+                            EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[0],
+                                $"\U00002694_Ваш противник:_ *{Storage.Users[Storage.Users[chatId].EnemyId].FirstName}*\n" +
+                                $"\U000026A0*Ошибка, вы не можете нечего писать кроме:*\n " +
+                                $"*/exit* - чтобы выйти из матча\n" +
+                                $"*/message* _(text)_ - чтобы отправить сообщение противнику_(без скобок)_!");
+                            DelitMessage(Storage.Users[chatId], update.Message.MessageId);
+                        }
                     }
                     else if (Storage.Users[chatId].InSandbox)
                     {
@@ -121,7 +151,10 @@ namespace Shotgun_Roulette_Game_TelegramBot
                     }
                     else
                     {
-                        SendMessage(Storage.Users[chatId], Storage.GetAnswerToMessage(messageText, isNewUser, userId: chatId), replyMarkup: Storage.GetKeyboardMarkup(messageText, isNewUser));
+                        if (messageText.Contains("/"))
+                            SendMessage(Storage.Users[chatId], Storage.GetAnswerToMessage(messageText, isNewUser, userId: chatId), replyMarkup: Storage.GetKeyboardMarkup(messageText, isNewUser));
+                        else
+                            SendMessage(Storage.Users[chatId], "\U000026D4*Вы ввели некорректное сообщение!*\nВведите /start.");
                     }
                 }
             }
@@ -137,30 +170,6 @@ namespace Shotgun_Roulette_Game_TelegramBot
                     "но не переживайте мы его сохраним в реестр сообщений_*!!!*\n\n" +
                     "Напишите */start* чтобы пользоваться ботом*!*");
             }
-        }
-
-        private static void StartSearch(User user)
-        {
-            user.InSearchGame = true;
-
-            foreach (var enemy in Storage.Users)
-                if (enemy.Value.Id != user.Id && enemy.Value.InSearchGame)
-                {
-                    user.InOnlineGame = true;
-                    enemy.Value.InOnlineGame = true;
-                    enemy.Value.InSearchGame = false;
-                    user.InSearchGame = false;
-                    EditMessage(enemy.Value, enemy.Value.BotMessagesId[enemy.Value.BotMessagesId.Count - 1],
-                        $"*\U00002694Противник найден!*\n" +
-                        $"_Ваш противник:_ *{user.NickName}*\n" +
-                        $"_Рейтинг противника:_ _{user.Points}_*C*.");
-                    EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
-                        $"*\U00002694Противник найден!*\n" +
-                        $"_Ваш противник:_ *{enemy.Value.NickName}*\n" +
-                        $"_Рейтинг противника:_ _{enemy.Value.Points}_*C*.");
-                    user.ReloadGamePoint();
-                    enemy.Value.ReloadGamePoint();
-                }
         }
 
         public async static void SendMessage(User user, string text, InlineKeyboardMarkup replyMarkup = null!, bool saveMessageToBotMessageIdList = false)

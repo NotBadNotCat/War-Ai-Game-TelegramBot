@@ -104,6 +104,7 @@
             stopAllMatchButton.TabIndex = 3;
             stopAllMatchButton.Text = "Остановить все матчи";
             stopAllMatchButton.UseVisualStyleBackColor = false;
+            stopAllMatchButton.Click += stopAllMatchButton_Click;
             // 
             // matchInfoLabel
             // 

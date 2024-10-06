@@ -111,7 +111,24 @@ namespace Shotgun_Roulette_Game_TelegramBot
             {
                 user.Value.Messages.Clear();
             }
-        
+
+        }
+
+        private void stopAllMatchButton_Click(object sender, EventArgs e)
+        {
+            foreach (var user in Storage.Users)
+            {
+                if (user.Value.InOnlineGame || user.Value.InSearchGame || user.Value.InSandbox)
+                {
+                    user.Value.InOnlineGame = false;
+                    user.Value.InSearchGame = false;
+                    user.Value.InSandbox = false;
+                    for (int i = 0; i < user.Value.BotMessagesId.Count; i++)
+                        TelegramBot.DelitMessage(user.Value, user.Value.BotMessagesId[i]);
+                    TelegramBot.SendMessage(user.Value, "\U0001F6E0*Матч отменён* из-за технических работ\U0001F6A7");
+                    Storage.SaveUsers();
+                }
+            }
         }
     }
 }

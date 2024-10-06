@@ -74,7 +74,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
                     "*Риском считается:*\r\n" +
                     "_•Выбрать пустую карту._ *(+4C)*\r\n" +
                     "_•Выстрелить в себя._ *(+3C)*\r\n" +
-                    "_•Использование карты ОСЕЧКА._ *(+2C)*\r\n" +
+                    "_•Использование карты Холостой._ *(+2C)*\r\n" +
                     "_•Ход при низком (при одном или двум) количестве жизней._ *(+2C)*\r\n" +
                     "_•Победа при большом количестве жизней._ *(+3C)*\r\n" +
                     "_•Остальное даёт малый плюс к риску._ *(+1C)*\r\n\r\n" +
@@ -93,22 +93,36 @@ namespace Shotgun_Roulette_Game_TelegramBot
                 int positionInTop = -1;
 
                 foreach (var user in Users)
-                        usersToSort.Add(user.Value);
+                    usersToSort.Add(user.Value);
                 if (usersToSort.Count > 0)
                 {
-                    usersToSort.Sort((u1, u2) => u1.Points.CompareTo(u2.Points));
+                    usersToSort.Sort((u1, u2) => u2.Points.CompareTo(u1.Points));
 
                     for (int i = 0; i < usersToSort.Count; i++)
                         if (usersToSort[i].Id == userId)
-                        { 
+                        {
                             positionInTop = i + 1;
                             break;
                         }
                 }
-
-                    if (userId != 0)
+                string text = "";
+                for (int i = 0; i < Users[userId].MatchsStatistics.Count; i++)
+                {
+                    if (i == 10)
+                    {
+                        break;
+                    }
+                    else if (Users[userId].MatchsStatistics[i] >= 0)
+                        text += $"_Игра_ - *{Users[userId].MatchsStatistics.Count - i}:*\n\U0001F4C8_Победа:_ *+{Users[userId].MatchsStatistics[i]}C*\n\n";
+                    else
+                        text += $"_Игра_ - *{Users[userId].MatchsStatistics.Count - i}:*\n\U0001F4C9_Поражение:_ *{Users[userId].MatchsStatistics[i]}C*\n\n";
+                }
+                if (text == "")
+                    text = "\U0000274c_Вы ещё не играли!_";
+                if (userId != 0)
                     return $"\U0001F4CAСтатистика *{Users[userId].FirstName}*: _{Users[userId].Points}_*C*\n" +
-                        $"Вы: *{positionInTop}* в топе*!*";
+                    $"Вы: *{positionInTop}* в топе*!*\n" +
+                    $"*Статистика последних 10 игр:*\n\n{text}";
                 else
                     return "";
             }
@@ -128,7 +142,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
 
                 if (usersToSort.Count > 0)
                 {
-                    usersToSort.Sort((u1, u2) => u1.Points.CompareTo(u2.Points));
+                    usersToSort.Sort((u1, u2) => u2.Points.CompareTo(u1.Points));
 
                     for (int i = 0; i < usersToSort.Count; i++)
                     {
@@ -181,11 +195,29 @@ namespace Shotgun_Roulette_Game_TelegramBot
             else if (message == "/stop")
                 return "\U000026D4*Вы не в поиске матча!*\nВведите /start.";
 
-            else if (message == "/exit" || message.Contains("/message") || message.Contains("/msg"))
+            else if (message == "/exit" || message.Contains("/message ") || message.Contains("/msg "))
                 return "\U000026D4*Вы не в матче!*\nВведите /start.";
 
             else if (message.Contains("/"))
                 return "\U000026D4*Такой команды нет!*\nЧтобы узнать все существующие команды бота воспользуйтесь /help.";
+
+            else if (message == "#Win#")
+                return $"\U0001F3C6*Вы выиграли*!\n" +
+                    $"Вы получаете чемодан с _{Users[userId].Score}_*C*\n" +
+                    $"*Вы можете*:\n" +
+                    $"Посмотреть топ 20 игроков:\n*/top*\n" +
+                    $"Посмотреть свою статистику:\n*/statistics*\n" +
+                    $"Вернуться на старт:\n*/start*\n" +
+                    $"_Или просто понажимать кнопки снизу_.";
+
+            else if (message == "#Lose#")
+                return $"\U0001F480*Вы проиграли*!\n" +
+                    $"За поражение мы забираем _{Users[Users[userId].EnemyId].Score}_*C*\n" +
+                    $"*Вы можете*:\n" +
+                    $"Посмотреть топ 20 игроков:\n*/top*\n" +
+                    $"Посмотреть свою статистику:\n*/statistics*\n" +
+                    $"Вернуться на старт:\n*/start*\n" +
+                    $"_Или просто понажимать кнопки снизу_.";
 
             else
                 return "\U000026D4*Вы ввели некорректное сообщение!*\nВведите /start.";
@@ -206,7 +238,7 @@ namespace Shotgun_Roulette_Game_TelegramBot
                         {
                             InlineKeyboardButton.WithCallbackData("\U0001F4D6Правила", "/rules")
                         }});
-                        
+
                         if (isNewUser)
                         {
                             kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
@@ -237,6 +269,9 @@ namespace Shotgun_Roulette_Game_TelegramBot
                     }
                 case "/rules":
                 case "/r":
+                case "/st":
+                case "/statistics":
+                case "/top":
                     {
                         var kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
                         new[]
@@ -262,6 +297,24 @@ namespace Shotgun_Roulette_Game_TelegramBot
                         {
                             InlineKeyboardButton.WithCallbackData("\U0000274CОстановить поиск", "StopSearch")
                         }});
+                        return kbrd;
+                    }
+                case "ExitOnline":
+                    {
+                        var kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0001F3AFНа старт", "/start")
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0001F4E2Посмотреть топ", "/top")
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0001F4CAМоя статистика", "/statistics")
+                        }
+                        });
                         return kbrd;
                     }
                 default:
