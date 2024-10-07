@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Telegram.Bot.Types;
 
-namespace Shotgun_Roulette_Game_TelegramBot
+namespace War_Ai_Game_TelegramBot
 {
     public partial class ChatForm : Form
     {

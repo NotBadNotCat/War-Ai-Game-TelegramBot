@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shotgun-Roulette-Game-TelegramBot", "Shotgun-Roulette-Game-TelegramBot\Shotgun-Roulette-Game-TelegramBot.csproj", "{2FD016AE-158E-4FA5-9902-3863F3BAA8F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "War-Ai-Game-TelegramBot", "War-Ai-Game-TelegramBot\War-Ai-Game-TelegramBot.csproj", "{2FD016AE-158E-4FA5-9902-3863F3BAA8F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

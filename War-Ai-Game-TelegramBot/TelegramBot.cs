@@ -10,7 +10,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace Shotgun_Roulette_Game_TelegramBot
+namespace War_Ai_Game_TelegramBot
 {
     internal class TelegramBot
     {

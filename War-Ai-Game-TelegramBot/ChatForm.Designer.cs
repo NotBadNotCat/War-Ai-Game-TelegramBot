@@ -1,4 +1,4 @@
-﻿namespace Shotgun_Roulette_Game_TelegramBot
+﻿namespace War_Ai_Game_TelegramBot
 {
     partial class ChatForm
     {
