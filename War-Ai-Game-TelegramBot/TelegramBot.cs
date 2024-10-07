@@ -54,11 +54,11 @@ namespace War_Ai_Game_TelegramBot
                     }
                     else if (Storage.Users[chatId].InOnlineGame)
                     {
-
+                        AiWarGame.Game(Storage.Users[chatId], update.CallbackQuery.Data);
                     }
                     else if (Storage.Users[chatId].InTutorial)
                     {
-
+                        AiWarGame.Tutorial(Storage.Users[chatId], update.CallbackQuery.Data);
                     }
                     else
                     {
@@ -135,6 +135,16 @@ namespace War_Ai_Game_TelegramBot
                             SendMessage(Storage.Users[chatId], "\U0001F50C*Вы само отформатировались!*\U0001F525");
                             AiWarGame.WinGame(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[chatId]);
                         }
+                        else if (messageText == "/skip" && !Storage.Users[chatId].IsPlayerMove)
+                        {
+                            if (DateTime.Now > Storage.Users[Storage.Users[chatId].EnemyId].LastMoveTime.AddSeconds(20))
+                                AiWarGame.MoveTransition(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[chatId]);
+                            /*else
+                                EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[0],
+                                        $"\U00002694_Ваш противник:_ *{Storage.Users[Storage.Users[chatId].EnemyId].FirstName}*\n" +
+                                        $"\U000026A0*Ошибка! 20 секунд ещё не прошли.");*/
+                                DelitMessage(Storage.Users[chatId], update.Message.MessageId);
+                        }
                         else
                         {
                             EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[0],
@@ -186,11 +196,11 @@ namespace War_Ai_Game_TelegramBot
                 System.IO.File.WriteAllText($"logs\\bot-{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.txt", $"{DateTime.Now}\n{ex}\n\n");
             }
         }
-        public async static void EditMessage(User user, int messageId, string text)
+        public async static void EditMessage(User user, int messageId, string text, InlineKeyboardMarkup replyMarkup = null!)
         {
             try
             {
-                await BotClient!.EditMessageTextAsync(user.Id, messageId, text, parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown);
+                await BotClient!.EditMessageTextAsync(user.Id, messageId, text, parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown, replyMarkup: replyMarkup);
             }
             catch (Exception ex)
             {

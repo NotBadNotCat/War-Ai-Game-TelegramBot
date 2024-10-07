@@ -32,7 +32,7 @@ namespace War_Ai_Game_TelegramBot
         public DateTime LastMoveTime;
         public int FileDamage = 1;
         public int HealthPoints = 4;
-        public List<string> SkillСards = new List<string>() { "EmptyFile", "Cleaning", "EncryptionVirus", "Antivirus", "DoubleSending" };
+        public List<string> FileExtensions = new List<string>() { "EmptyFile", "Antivirus", "EncryptionVirus", "Diagnostics", "DoubleSending" };
 
         public void ReloadGamePoint()
         {
@@ -41,7 +41,7 @@ namespace War_Ai_Game_TelegramBot
             FileDamage = 1;
             HealthPoints = 4;
             Score = 0;
-            SkillСards = new List<string>() { "EmptyFile", "Cleaning", "EncryptionVirus", "Antivirus", "DoubleSending" };
+            FileExtensions = new List<string>() { "EmptyFile", "Antivirus", "EncryptionVirus", "Diagnostics", "DoubleSending" };
         }
     }
 }
