@@ -8,7 +8,7 @@ namespace War_Ai_Game_TelegramBot
 {
     internal class User
     {
-        public User(Int64 userId, string firstName, string nickName) 
+        public User(Int64 userId, string firstName, string nickName)
         { Id = userId; FirstName = firstName; NickName = nickName; }
 
         public Int64 Id;
@@ -20,7 +20,7 @@ namespace War_Ai_Game_TelegramBot
 
         public bool IsBanned;
         public bool InOnlineGame;
-        public bool InSandbox;
+        public bool InTutorial;
         public bool InSearchGame;
 
         public int Points = 0;
@@ -30,18 +30,18 @@ namespace War_Ai_Game_TelegramBot
         public Int64 EnemyId;
         public bool IsPlayerMove;
         public DateTime LastMoveTime;
-        public int ShotGunDamage = 1;
+        public int FileDamage = 1;
         public int HealthPoints = 4;
-        public List<string> SkillСards = new List<string>() { "BlankСartridge", "Reload", "MedicineBullet", "MedKit", "Amplifier" };
+        public List<string> SkillСards = new List<string>() { "EmptyFile", "Cleaning", "EncryptionVirus", "Antivirus", "DoubleSending" };
 
         public void ReloadGamePoint()
         {
             EnemyId = 0;
             IsPlayerMove = false;
-            ShotGunDamage = 1;
+            FileDamage = 1;
             HealthPoints = 4;
             Score = 0;
-            SkillСards = new List<string>() { "BlankСartridge", "Reload", "MedicineBullet", "MedKit", "Amplifier" };
+            SkillСards = new List<string>() { "EmptyFile", "Cleaning", "EncryptionVirus", "Antivirus", "DoubleSending" };
         }
     }
 }

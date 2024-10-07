@@ -52,7 +52,7 @@ namespace War_Ai_Game_TelegramBot
                 {
                     if (user.Value.InOnlineGame)
                         countUserInOnlineGame++;
-                    else if (user.Value.InSandbox)
+                    else if (user.Value.InTutorial)
                         countUserInSandbox++;
                     else if (user.Value.InSearchGame)
                         countUserInSearchGame++;
@@ -63,7 +63,7 @@ namespace War_Ai_Game_TelegramBot
                 }
                 matchInfoLabel.Text = $"В поиске игры: {countUserInSearchGame}\n" +
                     $"В игре: {countUserInOnlineGame}\n" +
-                    $"В песочнице: {countUserInSandbox}\n" +
+                    $"В обучении: {countUserInSandbox}\n" +
                     $"Не активны: {countOfflineUsers}\n" +
                     $"В бане: {countBannedUsers}\n" +
                     $"\nВсего: {Storage.Users.Count}";
@@ -118,11 +118,11 @@ namespace War_Ai_Game_TelegramBot
         {
             foreach (var user in Storage.Users)
             {
-                if (user.Value.InOnlineGame || user.Value.InSearchGame || user.Value.InSandbox)
+                if (user.Value.InOnlineGame || user.Value.InSearchGame || user.Value.InTutorial)
                 {
                     user.Value.InOnlineGame = false;
                     user.Value.InSearchGame = false;
-                    user.Value.InSandbox = false;
+                    user.Value.InTutorial = false;
                     for (int i = 0; i < user.Value.BotMessagesId.Count; i++)
                         TelegramBot.DelitMessage(user.Value, user.Value.BotMessagesId[i]);
                     TelegramBot.SendMessage(user.Value, "\U0001F6E0*Матч отменён* из-за технических работ\U0001F6A7");

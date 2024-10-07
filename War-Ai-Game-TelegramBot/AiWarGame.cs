@@ -7,9 +7,9 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace War_Ai_Game_TelegramBot
 {
-    internal class ShotgunGame
+    internal class AiWarGame
     {
-        public ShotgunGame() 
+        public AiWarGame() 
         {
 
         }
@@ -31,11 +31,11 @@ namespace War_Ai_Game_TelegramBot
                     TelegramBot.DelitMessage(enemy.Value, enemy.Value.BotMessagesId[enemy.Value.BotMessagesId.Count - 1]);
                     enemy.Value.BotMessagesId.RemoveAt(enemy.Value.BotMessagesId.Count - 1);
                     TelegramBot.SendMessage(enemy.Value,
-                        $"*\U00002694Противник найден!*\n" +
+                        $"*\U0001F47EПротивник найден!*\n" +
                         $"_Ваш противник:_ *{user.FirstName}*\n" +
                         $"_Рейтинг противника:_ _{user.Points}_*C*.", saveMessageToBotMessageIdList: true);
                     TelegramBot.SendMessage(user,
-                        $"*\U00002694Противник найден!*\n" +
+                        $"*\U0001F47EПротивник найден!*\n" +
                         $"_Ваш противник:_ *{enemy.Value.FirstName}*\n" +
                         $"_Рейтинг противника:_ _{enemy.Value.Points}_*C*.", saveMessageToBotMessageIdList: true);
                     user.ReloadGamePoint();
@@ -46,22 +46,22 @@ namespace War_Ai_Game_TelegramBot
                     Storage.Users[user.Id] = user;
                     Storage.Users[enemy.Value.Id] = enemy.Value;
                     TelegramBot.SendMessage(enemy.Value,
-                        $"*Счетчик жизни:*\n" +
+                        $"\U0001F4DF*Счетчик серверов:*\n" +
                         $"\U0001F4BE*{enemy.Value.FirstName}*: {enemy.Value.HealthPoints}\n" +
                         $"\U0001F4BE*{user.FirstName}*: {user.HealthPoints}",
                         saveMessageToBotMessageIdList: true);
                     TelegramBot.SendMessage(user,
-                        $"*Счетчик жизни:*\n" +
+                        $"\U0001F4DF*Счетчик серверов:*\n" +
                         $"\U0001F4BE*{enemy.Value.FirstName}*: {enemy.Value.HealthPoints}\n" +
                         $"\U0001F4BE*{user.FirstName}*: {user.HealthPoints}",
                         saveMessageToBotMessageIdList: true);
                     TelegramBot.SendMessage(enemy.Value,
-                        $"*Выбирите карту:*",
+                        $"*Выбирите файл для отправки:*",
                         saveMessageToBotMessageIdList: true, replyMarkup: GetSetOfCards(user));
                     TelegramBot.SendMessage(user,
                         $"*Сейчас ход противника!*\n" +
                         $"Если он ходит дольше 20 секунд, то вы можете пропустить его ход командой:" +
-                        $"\n*/skip*\n_Но учтите, он что-то мог успеть сделать с дробовиком!_",
+                        $"\n*/skip*\n_Но учтите, он что-то мог успеть сделать с файлами!_",
                         saveMessageToBotMessageIdList: true);
                     Storage.SaveUsers();
                     return;
@@ -103,12 +103,12 @@ namespace War_Ai_Game_TelegramBot
         private static InlineKeyboardMarkup GetSetOfCards(User user)
         {
             Dictionary<string, string> NameSkills = new Dictionary<string, string>() 
-            { 
-                { "BlankСartridge", "\U0001F52BХолостой" }, 
-                { "Reload", "\U0001F504Перезарядка" }, 
-                { "MedicineBullet", "\U0001F489Лечебный патрон" }, 
-                { "MedKit", "\U0001FA79Аптечка" }, 
-                { "Amplifier", "\U0001F4A5Усилитель" } 
+            {
+                { "EmptyFile", "\U0001F4D1Пустой файл.pdf" }, 
+                { "Cleaning", "\U0001F9F9Очистка реестра.exe" }, 
+                { "EncryptionVirus", "\U0001F510Шифровщик.bat" }, 
+                { "Antivirus", "\U0001F6E1Антивирус.exe" }, 
+                { "DoubleSending", "\U0001F4E92 вирусных файла" } 
             };
             var buttons = new List<List<InlineKeyboardButton>>();
             
@@ -121,7 +121,7 @@ namespace War_Ai_Game_TelegramBot
                 buttons.Add(row);
 
             }
-            buttons.Add(new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData("\U0000274EНе трогать карты", "Empty") });
+            buttons.Add(new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData("\U0000274EОбычный Вирус.bat", "Empty") });
             return new InlineKeyboardMarkup(buttons);
         }
     }

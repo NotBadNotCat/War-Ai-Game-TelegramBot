@@ -56,7 +56,7 @@ namespace War_Ai_Game_TelegramBot
                     {
 
                     }
-                    else if (Storage.Users[chatId].InSandbox)
+                    else if (Storage.Users[chatId].InTutorial)
                     {
 
                     }
@@ -74,7 +74,7 @@ namespace War_Ai_Game_TelegramBot
                                 messageText = update.CallbackQuery.Data; SendMessage(Storage.Users[chatId], Storage.GetAnswerToMessage(messageText, userId: chatId), replyMarkup: Storage.GetKeyboardMarkup(messageText)); break;
                             case "StartSearch":
                                 {
-                                    ShotgunGame.StartSearch(Storage.Users[chatId]);
+                                    AiWarGame.StartSearch(Storage.Users[chatId]);
                                     break;
                                 }
                             default:
@@ -123,17 +123,17 @@ namespace War_Ai_Game_TelegramBot
                                     text += $"{Storage.Users[chatId].FirstName}: ";
                             }
                             EditMessage(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[Storage.Users[chatId].EnemyId].BotMessagesId[0],
-                                $"\U00002694_Ваш противник:_ *{Storage.Users[chatId].FirstName}*\n\U00002712*Сообщение:*\n*{text}*");
+                                $"\U0001F47E_Ваш противник:_ *{Storage.Users[chatId].FirstName}*\n\U000021AA*Сообщение:*\n*{text}*");
                             EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[0],
-                                $"\U00002694_Ваш противник:_ *{Storage.Users[Storage.Users[chatId].EnemyId].FirstName}*\n\U00002705*Сообщение отправлено!*");
+                                $"\U0001F47E_Ваш противник:_ *{Storage.Users[Storage.Users[chatId].EnemyId].FirstName}*\n\U00002705*Сообщение отправлено!*");
                             DelitMessage(Storage.Users[chatId], update.Message.MessageId);
                         }
                         else if (messageText == "/exit")
                         {
                             Storage.Users[Storage.Users[chatId].EnemyId].Score += (Storage.Users[chatId].HealthPoints * 4);
-                            SendMessage(Storage.Users[Storage.Users[chatId].EnemyId], "\U0001F4A5*Противник застрелился!*\U0001F480");
-                            SendMessage(Storage.Users[chatId], "\U0001F4A5*Вы застрелились!*\U0001F480");
-                            ShotgunGame.WinGame(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[chatId]);
+                            SendMessage(Storage.Users[Storage.Users[chatId].EnemyId], "\U0001F50C*Противник само отформатировался!*\U0001F525");
+                            SendMessage(Storage.Users[chatId], "\U0001F50C*Вы само отформатировались!*\U0001F525");
+                            AiWarGame.WinGame(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[chatId]);
                         }
                         else
                         {
@@ -145,7 +145,7 @@ namespace War_Ai_Game_TelegramBot
                             DelitMessage(Storage.Users[chatId], update.Message.MessageId);
                         }
                     }
-                    else if (Storage.Users[chatId].InSandbox)
+                    else if (Storage.Users[chatId].InTutorial)
                     {
 
                     }
