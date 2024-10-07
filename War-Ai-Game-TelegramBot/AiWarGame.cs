@@ -104,6 +104,7 @@ namespace War_Ai_Game_TelegramBot
         {
             Dictionary<string, string> NameSkills = new Dictionary<string, string>() 
             {
+
                 { "EmptyFile", "\U0001F4D1Пустой файл.pdf" }, 
                 { "Cleaning", "\U0001F9F9Очистка реестра.exe" }, 
                 { "EncryptionVirus", "\U0001F510Шифровщик.bat" }, 
