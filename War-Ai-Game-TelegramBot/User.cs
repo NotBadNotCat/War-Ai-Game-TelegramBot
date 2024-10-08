@@ -19,6 +19,8 @@ namespace War_Ai_Game_TelegramBot
         public List<string> Messages = new List<string>();
 
         public bool IsBanned;
+        public bool IsCompletTutorial;
+
         public bool InOnlineGame;
         public bool InTutorial;
         public bool InSearchGame;
@@ -34,7 +36,7 @@ namespace War_Ai_Game_TelegramBot
         public int HealthPoints = 4;
         public List<string> FileExtensions = new List<string>() { "EmptyFile", "Antivirus", "EncryptionVirus", "Diagnostics", "DoubleSending" };
 
-        public void ReloadGamePoint()
+        public void ReloadGameParameters()
         {
             EnemyId = 0;
             IsPlayerMove = false;

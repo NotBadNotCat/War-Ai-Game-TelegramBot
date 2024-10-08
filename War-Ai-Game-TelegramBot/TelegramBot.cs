@@ -45,7 +45,7 @@ namespace War_Ai_Game_TelegramBot
                     if (Storage.Users[chatId].InSearchGame)
                     {
                         if (update.CallbackQuery.Data == "StopSearch")
-                        { 
+                        {
                             Storage.Users[chatId].InSearchGame = false;
                             EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[Storage.Users[chatId].BotMessagesId.Count - 1],
                                 "\U0000274E*Поиск отменён!*\nВведите /start");
@@ -75,6 +75,12 @@ namespace War_Ai_Game_TelegramBot
                             case "StartSearch":
                                 {
                                     AiWarGame.StartSearch(Storage.Users[chatId]);
+                                    break;
+                                }
+                            case "Tutorial":
+                                {
+                                    Storage.Users[chatId].InTutorial = true;
+                                    AiWarGame.Tutorial(Storage.Users[chatId], "Start");
                                     break;
                                 }
                             default:
@@ -108,6 +114,10 @@ namespace War_Ai_Game_TelegramBot
                             EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[Storage.Users[chatId].BotMessagesId.Count - 1],
                                 "\U0000274E*Поиск отменён!*\nВведите /start");
                             Storage.Users[chatId].BotMessagesId.RemoveAt(Storage.Users[chatId].BotMessagesId.Count - 1);
+                        }
+                        else
+                        {
+                            DelitMessage(Storage.Users[chatId], update.Message.MessageId);
                         }
                     }
                     else if (Storage.Users[chatId].InOnlineGame)
@@ -143,7 +153,7 @@ namespace War_Ai_Game_TelegramBot
                                 EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[0],
                                         $"\U00002694_Ваш противник:_ *{Storage.Users[Storage.Users[chatId].EnemyId].FirstName}*\n" +
                                         $"\U000026A0*Ошибка! 20 секунд ещё не прошли.");*/
-                                DelitMessage(Storage.Users[chatId], update.Message.MessageId);
+                            DelitMessage(Storage.Users[chatId], update.Message.MessageId);
                         }
                         else
                         {
@@ -157,7 +167,19 @@ namespace War_Ai_Game_TelegramBot
                     }
                     else if (Storage.Users[chatId].InTutorial)
                     {
-
+                        if (messageText == "/exit")
+                        {
+                            for (int i = 0; i < Storage.Users[chatId].BotMessagesId.Count; i++)
+                                DelitMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[i]);
+                            Storage.Users[chatId].BotMessagesId.Clear();
+                            SendMessage(Storage.Users[chatId], "\U0001F4CCВы *покинули* обучение*!*", replyMarkup: Storage.GetKeyboardMarkup("ExitOnline"));
+                            Storage.Users[chatId].InTutorial = false;
+                            DelitMessage(Storage.Users[chatId], update.Message.MessageId);
+                        }
+                        else
+                        {
+                            DelitMessage(Storage.Users[chatId], update.Message.MessageId);
+                        }
                     }
                     else
                     {
@@ -174,11 +196,15 @@ namespace War_Ai_Game_TelegramBot
 
                 Storage.UserExsistCheckAndWrite(chatId, update.Message.From.FirstName, update.Message.From.Username);
                 Storage.Users[chatId].Messages.Add("#Wrong_Format_Message#");
-
-                SendMessage(Storage.Users[chatId], "\U000026D4_К сожалению, бот " +
-                    "не умеет обрабатывать сообщения данного формата, " +
-                    "но не переживайте мы его сохраним в реестр сообщений_*!!!*\n\n" +
-                    "Напишите */start* чтобы пользоваться ботом*!*");
+                if (Storage.Users[chatId].InOnlineGame || Storage.Users[chatId].InSearchGame || Storage.Users[chatId].InTutorial)
+                    DelitMessage(Storage.Users[chatId], update.Message.MessageId);
+                else
+                {
+                    SendMessage(Storage.Users[chatId], "\U000026D4_К сожалению, бот " +
+                        "не умеет обрабатывать сообщения данного формата, " +
+                        "но не переживайте мы его сохраним в реестр сообщений_*!!!*\n\n" +
+                        "Напишите */start* чтобы пользоваться ботом*!*");
+                }
             }
         }
 

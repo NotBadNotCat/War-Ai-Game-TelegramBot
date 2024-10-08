@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
+﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic.ApplicationServices;
+using Microsoft.VisualBasic.Devices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
@@ -7,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace War_Ai_Game_TelegramBot
 {
@@ -74,24 +77,24 @@ namespace War_Ai_Game_TelegramBot
                         {
                             TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
                                 "\U0000274CВы отправили себе вирус!\n\n" +
-                                "\U0001F4C2*Куда отправить файл?*\U000023E9", 
+                                "\U0001F4C2*Куда отправить файл?*\U000023E9",
                                 replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"));
                         }
                         if (user.FileDamage == 0)
                         {
                             TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
                                 "\U00002705Вы обнаружили пустой файл!\n\n" +
-                                "\U0001F4C2*Куда отправить файл?*\U000023E9", 
+                                "\U0001F4C2*Куда отправить файл?*\U000023E9",
                                 replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"));
                         }
                         else if (user.FileDamage == -1 || user.FileDamage == -2)
                         {
                             TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
                                 "\U00002705Вы шифровщик обнаружили !\n\n" +
-                                "\U0001F4C2*Куда отправить файл?*\U000023E9", 
+                                "\U0001F4C2*Куда отправить файл?*\U000023E9",
                                 replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"));
                         }
-                        
+
 
                         if (user.HealthPoints <= 0)
                         {
@@ -170,7 +173,135 @@ namespace War_Ai_Game_TelegramBot
         }
         public static void Tutorial(User user, string сallbackQueryData)
         {
+            switch (сallbackQueryData)
+            {
+                case "Start":
+                    {
+                        TelegramBot.SendMessage(user, "*Добро пожаловать в обучение!*, _вы в любой момент можете выйти с помощью:_\n*/exit*", saveMessageToBotMessageIdList: true);
+                        user.ReloadGameParameters();
+                        TelegramBot.SendMessage(user,
+                            $"*Выбирите файл для информации о нем:*",
+                            saveMessageToBotMessageIdList: true, replyMarkup: TryEndTutorial(user));
 
+                        break;
+                    }
+                case "Empty":
+                    {
+                        string text = "\U0000274E*Обычный Вирус.bat:*\n" +
+                            "Единственны бесконечный файл, " +
+                            "необходимый для обычной отправки без совершения каких-либо действий. " +
+                            "Его можно использовать по-разному.";
+                        TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1], text, replyMarkup: TryEndTutorial(user));
+
+                        break;
+                    }
+                case "EmptyFile":
+                    {
+
+                        user.FileExtensions.Remove(сallbackQueryData);
+                        string text = "\U0001F4D1*Подкинуть пустой файл.pdf:*\n" +
+                            "Вы заменяете вирусные фалы противника пустыми файлами " +
+                            "из-за чего он не может нормально сходить. " +
+                            "Допустим он решит использовать \U0001F4E92 вирусных файла, " +
+                            "в таком случае он просто отправит вам пустые файлы вместо усиленных. " +
+                            "Таким образом вы можете защитить себя. " +
+                            "Правда их может обнаружить \U0001F6E1Проверка с помощью Антивирус.exe или отправка файлов самому себе.";
+                        TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1], text, replyMarkup: TryEndTutorial(user));
+
+                        break;
+                    }
+                case "Antivirus":
+                    {
+                        user.FileExtensions.Remove(сallbackQueryData);
+                        string text = "\U0001F6E1*Проверка с помощью Антивирус.exe:*\n" +
+                            "Вы проверяете свои файлы, " +
+                            "и можете обнаружить подосланные противником пустые файлы или шифровщик. " +
+                            "Если антивирус обнаружит пустые файлы, " +
+                            "то он их уничтожит, а если шифровщик, " +
+                            "то вы получите 1 сервер.";
+                        TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1], text, replyMarkup: TryEndTutorial(user));
+
+                        break;
+                    }
+                case "EncryptionVirus":
+                    {
+                        user.FileExtensions.Remove(сallbackQueryData);
+                        string text = "\U0001F510*Шифровщик.bat*\n" +
+                            "Вы подсылаете противнику шифровщик, " +
+                            "и если он своим ходом отправит вам файлы, " +
+                            "то вы получите 1 или 2 сервера. Если вы получили шифровщик, " +
+                            "то его можно обнаружить, отправив его самому себе. " +
+                            "Может также \U0001F6E1Проверка с помощью Антивирус.exe обнаружить шифровщик. " +
+                            "Если вы обнаружите шифровщик противника, " +
+                            "то не противник, а вы получите 1 сервер.";
+                        TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1], text, replyMarkup: TryEndTutorial(user));
+
+                        break;
+                    }
+                case "Diagnostics":
+                    {
+                        user.FileExtensions.Remove(сallbackQueryData);
+                        string text = "\U0001F527*Устранение неполадок:*\n" +
+                            "За выполнения данной задачи вы получите 1 сервер.";
+                        TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1], text, replyMarkup: TryEndTutorial(user));
+
+                        break;
+                    }
+                case "DoubleSending":
+                    {
+                        user.FileExtensions.Remove(сallbackQueryData);
+                        string text = "\U0001F4E9*2 вирусных файла:*\n" +
+                            "Вы отправляете 2 вирусных файла вместо одного. " +
+                            "Но вирусные файлы это громко сказано. " +
+                            "Противник может подменить ваши файлы пустыми или закинуть Шифровщик из-за чего вы отправите ему 2 таких файла. " +
+                            "Если файлы пустые, то вы просто зря потратите столь ценную возможность уничтожить 2 сервера противника, " +
+                            "а если есть Шифровщик, то он удвоится и вы поможете противнику получить 2 сервера.";
+                        TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1], text, replyMarkup: TryEndTutorial(user));
+                        
+                        break;
+                    }
+                case "End":
+                    {
+                        string text = "*Удачи в матчах!*";
+                        if (!user.IsCompletTutorial)
+                        {
+                            text = "Так как вы *прошли обучение 1й раз*, вы получаете _8_ бонусных очков!\n\n*Удачи в матчах!*";
+                            user.IsCompletTutorial = true;
+                        }
+                        for (int i = 0; i < user.BotMessagesId.Count; i++)
+                            TelegramBot.DelitMessage(user, user.BotMessagesId[i]);
+                        user.BotMessagesId.Clear();
+                        TelegramBot.SendMessage(user, $"\U0001F3C1Вы *прошли* обучение*!*\U0001F3C1\n\n" +
+                            $"Теперь, вам необходимо знать, что после выбора вида файла вам дадут выбрать куда отправить, " +
+                            $"о чем было написано в некоторых видах файлов. Так вот, если вы отправите себе свой же вирус себе, " +
+                            $"то ваши сервера пострадают!\n\n{text}",
+                            replyMarkup: Storage.GetKeyboardMarkup("ExitOnline"));
+                        user.InTutorial = false;
+                        user.Points += 8;
+                        Storage.SaveUsers();
+                        break;
+                    }
+            }
+
+
+        }
+        private static InlineKeyboardMarkup TryEndTutorial(User user)
+        {
+            InlineKeyboardMarkup kbrd = new InlineKeyboardMarkup(new InlineKeyboardButton[][] {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0000274EОбычный Вирус.bat", "Empty")
+                        },
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData("\U0001F3C1Завершить", "End")
+                        }});
+            if (user.FileExtensions.Count == 0)
+            {
+                return kbrd;
+            }
+            else
+            return GetSetOfCards(user);
         }
         public static void StartSearch(User user)
         {
@@ -193,8 +324,8 @@ namespace War_Ai_Game_TelegramBot
                         $"*\U0001F47EПротивник найден!*\n" +
                         $"_Ваш противник:_ *{enemy.Value.FirstName}*\n" +
                         $"_Рейтинг противника:_ _{enemy.Value.Points}_*C*.", saveMessageToBotMessageIdList: true);
-                    user.ReloadGamePoint();
-                    enemy.Value.ReloadGamePoint();
+                    user.ReloadGameParameters();
+                    enemy.Value.ReloadGameParameters();
                     enemy.Value.EnemyId = user.Id;
                     user.EnemyId = enemy.Key;
                     enemy.Value.IsPlayerMove = true;
