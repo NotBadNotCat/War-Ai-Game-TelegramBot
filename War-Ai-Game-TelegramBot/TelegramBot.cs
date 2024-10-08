@@ -18,7 +18,7 @@ namespace War_Ai_Game_TelegramBot
         private static TelegramBotClient BotClient = null!;
         public static void StartTelegramBot()
         {
-            BotClient = new TelegramBotClient("7762140132:AAEU2Iz0juwg80byvemHPyjW_djZu2ycRaQ");
+            BotClient = new TelegramBotClient("7780011437:AAEl8GgGMi9xPb1EaMPbzpcDL7B6M7SWYhU");
             BotClient?.StartReceiving(updateHandler: HandleUpdate, pollingErrorHandler: HandlePollingError);
         }
         private static async Task HandlePollingError(ITelegramBotClient client, Exception exception, CancellationToken token)
