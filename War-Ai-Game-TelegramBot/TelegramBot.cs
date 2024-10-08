@@ -47,8 +47,8 @@ namespace War_Ai_Game_TelegramBot
                         if (update.CallbackQuery.Data == "StopSearch")
                         {
                             Storage.Users[chatId].InSearchGame = false;
-                            EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[Storage.Users[chatId].BotMessagesId.Count - 1],
-                                "\U0000274E*Поиск отменён!*\nВведите /start");
+                            DelitMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[Storage.Users[chatId].BotMessagesId.Count - 1]);
+                            SendMessage(Storage.Users[chatId], "\U0000274E*Поиск отменён!*\nВведите /start");
                             Storage.Users[chatId].BotMessagesId.RemoveAt(Storage.Users[chatId].BotMessagesId.Count - 1);
                         }
                     }
@@ -111,8 +111,8 @@ namespace War_Ai_Game_TelegramBot
                         if (messageText == "/stop")
                         {
                             Storage.Users[chatId].InSearchGame = false;
-                            EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[Storage.Users[chatId].BotMessagesId.Count - 1],
-                                "\U0000274E*Поиск отменён!*\nВведите /start");
+                            DelitMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[Storage.Users[chatId].BotMessagesId.Count - 1]);
+                            SendMessage(Storage.Users[chatId], "\U0000274E*Поиск отменён!*\nВведите /start");
                             Storage.Users[chatId].BotMessagesId.RemoveAt(Storage.Users[chatId].BotMessagesId.Count - 1);
                         }
                         else
