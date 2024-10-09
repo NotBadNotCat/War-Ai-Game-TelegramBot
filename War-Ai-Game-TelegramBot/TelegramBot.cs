@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Telegram.Bot;
@@ -47,9 +48,7 @@ namespace War_Ai_Game_TelegramBot
                         if (update.CallbackQuery.Data == "StopSearch")
                         {
                             Storage.Users[chatId].InSearchGame = false;
-                            DelitMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[Storage.Users[chatId].BotMessagesId.Count - 1]);
                             SendMessage(Storage.Users[chatId], "\U0000274E*Поиск отменён!*\nВведите /start");
-                            Storage.Users[chatId].BotMessagesId.RemoveAt(Storage.Users[chatId].BotMessagesId.Count - 1);
                         }
                     }
                     else if (Storage.Users[chatId].InOnlineGame)
@@ -207,9 +206,10 @@ namespace War_Ai_Game_TelegramBot
                 }
             }
         }
-
+        private static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         public async static void SendMessage(User user, string text, InlineKeyboardMarkup replyMarkup = null!, bool saveMessageToBotMessageIdList = false)
         {
+            await semaphore.WaitAsync();
             try
             {
                 Telegram.Bot.Types.Message message = await BotClient!.SendTextMessageAsync(user.Id, text, parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown, disableWebPagePreview: true, replyMarkup: replyMarkup);
@@ -220,6 +220,10 @@ namespace War_Ai_Game_TelegramBot
             catch (Exception ex)
             {
                 System.IO.File.WriteAllText($"logs\\bot-{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}.txt", $"{DateTime.Now}\n{ex}\n\n");
+            }
+            finally
+            {
+                semaphore.Release();
             }
         }
         public async static void EditMessage(User user, int messageId, string text, InlineKeyboardMarkup replyMarkup = null!)

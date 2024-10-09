@@ -17,119 +17,130 @@ namespace War_Ai_Game_TelegramBot
     {
         public static void Game(User user, string сallbackQueryData)
         {
-            switch (сallbackQueryData)
+            if (!user.IsUserSendCards)
             {
-                case "Empty":
-                    SendChoiceMessage(user);
-                    break;
-                case "EmptyFile":
-                    Storage.Users[user.EnemyId].FileDamage = 0;
-                    SendChoiceMessage(user, "\U00002705Вы подменили вирусные файлы противника пустыми фалами\n\n");
-                    user.FileExtensions.Remove(сallbackQueryData);
-                    break;
-                case "Antivirus":
-                    {
-                        if (user.FileDamage == 1)
-                            SendChoiceMessage(user, "\U0000274CАнтивирус *ничего не выявил*!\n\n");
-                        else if (user.FileDamage == 0)
+                switch (сallbackQueryData)
+                {
+                    case "Empty":
+                        SendChoiceMessage(user);
+                        break;
+                    case "EmptyFile":
+                        Storage.Users[user.EnemyId].FileDamage = 0;
+                        SendChoiceMessage(user, "\U00002705Вы подменили вирусные файлы противника пустыми фалами\n\n");
+                        user.FileExtensions.Remove(сallbackQueryData);
+                        break;
+                    case "Antivirus":
                         {
-                            SendChoiceMessage(user, "\U00002796Антивирус *нашёл пустые файлы и удалил их*!\n\n");
-                            user.FileDamage = 1;
+                            if (user.FileDamage == 1)
+                                SendChoiceMessage(user, "\U0000274CАнтивирус *ничего не выявил*!\n\n");
+                            else if (user.FileDamage == 0)
+                            {
+                                SendChoiceMessage(user, "\U00002796Антивирус *нашёл пустые файлы и удалил их*!\n\n");
+                                user.FileDamage = 1;
+                            }
+                            else if (user.FileDamage == -1 || user.FileDamage == -2)
+                            {
+                                SendChoiceMessage(user, "\U00002705Антивирус *нашёл шифровщика с кодом*! Расшифровав, вы получаете ещё один сервер.\n\n");
+                                user.FileDamage = 1;
+                                user.HealthPoints += 1;
+                                ReloadServerCount(user);
+                            }
+                            else
+                            {
+                            }
+                            user.FileExtensions.Remove(сallbackQueryData);
+                            break;
                         }
-                        else if (user.FileDamage == -1 || user.FileDamage == -2)
+                    case "EncryptionVirus":
                         {
-                            SendChoiceMessage(user, "\U00002705Антивирус *нашёл шифровщика с кодом*! Расшифровав, вы получаете ещё один сервер.\n\n"); user.FileDamage = 1;
+                            Storage.Users[user.EnemyId].FileDamage = -1;
+                            user.FileExtensions.Remove(сallbackQueryData);
+                            SendChoiceMessage(user, "\U00002705Вы подкинули шифровщик противнику! Если он его не найдёт, то следующим ходом он отправит вам данные о секретных серверах!\n\n");
+                            break;
+                        }
+                    case "Diagnostics":
+                        {
                             user.HealthPoints += 1;
                             ReloadServerCount(user);
+                            user.FileExtensions.Remove(сallbackQueryData);
+                            SendChoiceMessage(user, "\U00002705Вы провели устранение неполадок на одном из ваших старых серверов и он вернулся в строй!\n\n");
+                            break;
                         }
-                        else
+                    case "DoubleSending":
                         {
+                            user.FileDamage *= 2;
+                            user.FileExtensions.Remove(сallbackQueryData);
+                            SendChoiceMessage(user, "\U00002705Количество отправляемых файлов увеличено в 2 раза!\n\n");
+                            break;
                         }
-                        user.FileExtensions.Remove(сallbackQueryData);
-                        break;
-                    }
-                case "EncryptionVirus":
-                    {
-                        Storage.Users[user.EnemyId].FileDamage = -1;
-                        user.FileExtensions.Remove(сallbackQueryData);
-                        SendChoiceMessage(user, "\U00002705Вы подкинули шифровщик противнику! Если он его не найдёт, то следующим ходом он отправит вам данные о секретных серверах!\n\n");
-                        break;
-                    }
-                case "Diagnostics":
-                    {
-                        user.HealthPoints += 1;
-                        ReloadServerCount(user);
-                        user.FileExtensions.Remove(сallbackQueryData);
-                        SendChoiceMessage(user, "\U00002705Вы провели устранение неполадок на одном из ваших старых серверов и он вернулся в строй!\n\n");
-                        break;
-                    }
-                case "DoubleSending":
-                    {
-                        user.FileDamage *= 2;
-                        user.FileExtensions.Remove(сallbackQueryData);
-                        SendChoiceMessage(user, "\U00002705Количество отправляемых файлов увеличено в 2 раза!\n\n");
-                        break;
-                    }
-                case "SendYourself":
-                    {
-                        user.HealthPoints -= user.FileDamage;
-                        if (user.HealthPoints > 0)
+                }
+            }
+            else if (user.IsPlayerMove)
+            {
+                switch (сallbackQueryData)
+                {
+                    case "SendYourself":
                         {
-                            TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
-                                "\U0000274CВы отправили себе вирус!\n\n" +
-                                "\U0001F4C2*Куда отправить файл?*\U000023E9",
-                                replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"));
-                        }
-                        if (user.FileDamage == 0)
-                        {
-                            TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
-                                "\U00002705Вы обнаружили пустой файл!\n\n" +
-                                "\U0001F4C2*Куда отправить файл?*\U000023E9",
-                                replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"));
-                        }
-                        else if (user.FileDamage == -1 || user.FileDamage == -2)
-                        {
-                            TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
-                                "\U00002705Вы шифровщик обнаружили !\n\n" +
-                                "\U0001F4C2*Куда отправить файл?*\U000023E9",
-                                replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"));
-                        }
+                            user.HealthPoints -= user.FileDamage;
+                            if (user.FileDamage > 0)
+                            {
+                                TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
+                                    "\U0000274CВы отправили себе вирус!\n\n" +
+                                    "\U0001F4C2*Куда отправить файл?*\U000023E9",
+                                    replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"));
+                            }
+                            if (user.FileDamage == 0)
+                            {
+                                TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
+                                    "\U00002705Вы обнаружили пустой файл!\n\n" +
+                                    "\U0001F4C2*Куда отправить файл?*\U000023E9",
+                                    replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"));
+                            }
+                            else if (user.FileDamage == -1 || user.FileDamage == -2)
+                            {
+                                TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1],
+                                    "\U00002705Вы шифровщик обнаружили !\n\n" +
+                                    "\U0001F4C2*Куда отправить файл?*\U000023E9",
+                                    replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"));
+                            }
 
 
-                        if (user.HealthPoints <= 0)
-                        {
-                            Storage.Users[user.EnemyId].Score += (Storage.Users[user.EnemyId].HealthPoints * 3);
-                            WinGame(Storage.Users[user.EnemyId], user);
+                            if (user.HealthPoints <= 0)
+                            {
+                                Storage.Users[user.EnemyId].Score += (Storage.Users[user.EnemyId].HealthPoints * 3);
+                                WinGame(Storage.Users[user.EnemyId], user);
+                            }
+                            else
+                            {
+                                user.FileDamage = 1;
+                                ReloadServerCount(user);
+                            }
+                            break;
                         }
-                        else
+                    case "SendEnemy":
                         {
-                            user.FileDamage = 1;
-                            ReloadServerCount(user);
-                        }
-                        break;
-                    }
-                case "SendEnemy":
-                    {
-                        Storage.Users[user.EnemyId].HealthPoints -= user.FileDamage;
-                        if (Storage.Users[user.EnemyId].HealthPoints <= 0)
-                        {
-                            user.Score += (user.HealthPoints * 3);
-                            WinGame(user, Storage.Users[user.EnemyId]);
-                        }
-                        else
-                        {
-                            user.FileDamage = 1;
-                            ReloadServerCount(user);
-                            MoveTransition(user, Storage.Users[user.EnemyId]);
-                        }
-                        break;
-                    }
+                            Storage.Users[user.EnemyId].HealthPoints -= user.FileDamage;
+                            if (Storage.Users[user.EnemyId].HealthPoints <= 0)
+                            {
+                                user.Score += (user.HealthPoints * 3);
+                                WinGame(user, Storage.Users[user.EnemyId]);
+                            }
+                            else
+                            {
+                                user.FileDamage = 1;
+                                ReloadServerCount(user);
+                                MoveTransition(user, Storage.Users[user.EnemyId]);
+                            }
 
+                            break;
+                        }
+                }
             }
         }
         public static void MoveTransition(User fromUser, User toUser)
         {
             fromUser.IsPlayerMove = false;
+            toUser.IsUserSendCards = false;
             toUser.IsPlayerMove = true;
             TelegramBot.DelitMessage(fromUser, fromUser.BotMessagesId[fromUser.BotMessagesId.Count - 1]);
             fromUser.BotMessagesId.RemoveAt(fromUser.BotMessagesId.Count - 1);
@@ -156,10 +167,12 @@ namespace War_Ai_Game_TelegramBot
                 enemyEmoji = "\U0001F6A8";
             if (Storage.Users[user.EnemyId].HealthPoints == 2)
                 enemyEmoji = "\U000026A0";
+
             TelegramBot.EditMessage(user, user.BotMessagesId[1],
                 $"\U0001F4DF*Счетчик серверов:*\n" +
                 $"{enemyEmoji}*{Storage.Users[user.EnemyId].FirstName}*: {Storage.Users[user.EnemyId].HealthPoints}\n" +
                 $"{userEmoji}*{user.FirstName}*: {user.HealthPoints}");
+
             TelegramBot.EditMessage(Storage.Users[user.EnemyId], Storage.Users[user.EnemyId].BotMessagesId[1],
                 $"\U0001F4DF*Счетчик серверов:*\n" +
                 $"{enemyEmoji}*{Storage.Users[user.EnemyId].FirstName}*: {Storage.Users[user.EnemyId].HealthPoints}\n" +
@@ -167,6 +180,7 @@ namespace War_Ai_Game_TelegramBot
         }
         private static void SendChoiceMessage(User user, string text = "")
         {
+            user.IsUserSendCards = true;
             TelegramBot.DelitMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1]);
             user.BotMessagesId.RemoveAt(user.BotMessagesId.Count - 1);
             TelegramBot.SendMessage(user, $"{text}\U0001F4C2*Куда отправить файл?*\U000023E9", replyMarkup: Storage.GetKeyboardMarkup("FileSendСhoice"), saveMessageToBotMessageIdList: true);
@@ -257,7 +271,7 @@ namespace War_Ai_Game_TelegramBot
                             "Если файлы пустые, то вы просто зря потратите столь ценную возможность уничтожить 2 сервера противника, " +
                             "а если есть Шифровщик, то он удвоится и вы поможете противнику получить 2 сервера.";
                         TelegramBot.EditMessage(user, user.BotMessagesId[user.BotMessagesId.Count - 1], text, replyMarkup: TryEndTutorial(user));
-                        
+
                         break;
                     }
                 case "End":
@@ -265,6 +279,7 @@ namespace War_Ai_Game_TelegramBot
                         string text = "*Удачи в матчах!*";
                         if (!user.IsCompletTutorial)
                         {
+                            user.Points += 8;
                             text = "Так как вы *прошли обучение 1й раз*, вы получаете _8_ бонусных очков!\n\n*Удачи в матчах!*";
                             user.IsCompletTutorial = true;
                         }
@@ -277,7 +292,6 @@ namespace War_Ai_Game_TelegramBot
                             $"то ваши сервера пострадают!\n\n{text}",
                             replyMarkup: Storage.GetKeyboardMarkup("ExitOnline"));
                         user.InTutorial = false;
-                        user.Points += 8;
                         Storage.SaveUsers();
                         break;
                     }
@@ -301,7 +315,7 @@ namespace War_Ai_Game_TelegramBot
                 return kbrd;
             }
             else
-            return GetSetOfCards(user);
+                return GetSetOfCards(user);
         }
         public static void StartSearch(User user)
         {
@@ -314,23 +328,26 @@ namespace War_Ai_Game_TelegramBot
                     enemy.Value.InOnlineGame = true;
                     enemy.Value.InSearchGame = false;
                     user.InSearchGame = false;
-                    TelegramBot.DelitMessage(enemy.Value, enemy.Value.BotMessagesId[enemy.Value.BotMessagesId.Count - 1]);
-                    enemy.Value.BotMessagesId.RemoveAt(enemy.Value.BotMessagesId.Count - 1);
+
                     TelegramBot.SendMessage(enemy.Value,
                         $"*\U0001F47EПротивник найден!*\n" +
                         $"_Ваш противник:_ *{user.FirstName}*\n" +
                         $"_Рейтинг противника:_ _{user.Points}_*C*.", saveMessageToBotMessageIdList: true);
+
                     TelegramBot.SendMessage(user,
                         $"*\U0001F47EПротивник найден!*\n" +
                         $"_Ваш противник:_ *{enemy.Value.FirstName}*\n" +
                         $"_Рейтинг противника:_ _{enemy.Value.Points}_*C*.", saveMessageToBotMessageIdList: true);
+
                     user.ReloadGameParameters();
                     enemy.Value.ReloadGameParameters();
+
                     enemy.Value.EnemyId = user.Id;
                     user.EnemyId = enemy.Key;
                     enemy.Value.IsPlayerMove = true;
                     Storage.Users[user.Id] = user;
                     Storage.Users[enemy.Value.Id] = enemy.Value;
+
                     TelegramBot.SendMessage(enemy.Value,
                         $"\U0001F4DF*Счетчик серверов:*\n" +
                         $"\U0001F4BE*{enemy.Value.FirstName}*: {enemy.Value.HealthPoints}\n" +
@@ -356,7 +373,7 @@ namespace War_Ai_Game_TelegramBot
             TelegramBot.SendMessage(user, "\U0000231B*Идёт поиск игроков!*\U0001F50D\n" +
                 "_Если вы хотите отменить поиск, то воспользуйтесь_ */stop* " +
                 "_или нажмите_ *кнопку* _ниже_.",
-                replyMarkup: Storage.GetKeyboardMarkup("StartSearch"), saveMessageToBotMessageIdList: true);
+                replyMarkup: Storage.GetKeyboardMarkup("StartSearch"));
         }
         public static void WinGame(User winer, User loser)
         {

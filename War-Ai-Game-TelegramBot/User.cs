@@ -31,6 +31,7 @@ namespace War_Ai_Game_TelegramBot
 
         public Int64 EnemyId;
         public bool IsPlayerMove;
+        public bool IsUserSendCards;
         public DateTime LastMoveTime;
         public int FileDamage = 1;
         public int HealthPoints = 4;
