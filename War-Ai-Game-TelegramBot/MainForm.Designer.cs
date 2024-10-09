@@ -33,6 +33,7 @@
             openChatButton = new Button();
             loadInfoButton = new Button();
             infoGroupBox = new GroupBox();
+            infoLabel = new Label();
             stopAllMatchButton = new Button();
             matchInfoLabel = new Label();
             buttonGroupBox = new GroupBox();
@@ -42,6 +43,7 @@
             clearMessageDBButton = new Button();
             banUserButton = new Button();
             updateTimer = new System.Windows.Forms.Timer(components);
+            infoGroupBox.SuspendLayout();
             buttonGroupBox.SuspendLayout();
             SuspendLayout();
             // 
@@ -81,10 +83,12 @@
             loadInfoButton.TabIndex = 1;
             loadInfoButton.Text = "Загрузить информацию о пользователе";
             loadInfoButton.UseVisualStyleBackColor = false;
+            loadInfoButton.Click += loadInfoButton_Click;
             // 
             // infoGroupBox
             // 
             infoGroupBox.BackColor = Color.DarkSlateGray;
+            infoGroupBox.Controls.Add(infoLabel);
             infoGroupBox.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
             infoGroupBox.ForeColor = Color.White;
             infoGroupBox.Location = new Point(338, 12);
@@ -93,6 +97,16 @@
             infoGroupBox.TabIndex = 2;
             infoGroupBox.TabStop = false;
             infoGroupBox.Text = "Информация";
+            // 
+            // infoLabel
+            // 
+            infoLabel.AutoSize = true;
+            infoLabel.Location = new Point(18, 48);
+            infoLabel.Name = "infoLabel";
+            infoLabel.Size = new Size(20, 25);
+            infoLabel.TabIndex = 0;
+            infoLabel.Text = "-";
+            infoLabel.Visible = false;
             // 
             // stopAllMatchButton
             // 
@@ -219,6 +233,8 @@
             Name = "MainForm";
             Text = "Окно администрирования";
             Load += MainForm_Load;
+            infoGroupBox.ResumeLayout(false);
+            infoGroupBox.PerformLayout();
             buttonGroupBox.ResumeLayout(false);
             buttonGroupBox.PerformLayout();
             ResumeLayout(false);
@@ -239,5 +255,6 @@
         private RadioButton usersBannedRadioButton;
         private RadioButton usersRadioButton;
         private Button banUserButton;
+        private Label infoLabel;
     }
 }

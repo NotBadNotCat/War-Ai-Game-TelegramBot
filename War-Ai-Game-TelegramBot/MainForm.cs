@@ -130,5 +130,32 @@ namespace War_Ai_Game_TelegramBot
                 }
             }
         }
+
+        private void loadInfoButton_Click(object sender, EventArgs e)
+        {
+            User user = Storage.Users[Convert.ToInt64(userIdListBox.SelectedItem)];
+            User enemy = Storage.Users[user.Id];
+
+            infoGroupBox.Text = $"Информация о: {user.Id}";
+            infoLabel.Text = $"Заблокирован: {user.IsBanned}\n\n" +
+                $"Имя: {user.FirstName}\n" +
+                $"@{user.NickName}\n" +
+                $"Очки: {user.Points}С\n" +
+                $"Прошёл туториал: {user.IsCompletTutorial}\n";
+            if (user.InSearchGame)
+                infoLabel.Text += "\nИщет игру...";
+            else if (user.InTutorial)
+                infoLabel.Text += "\nВ обучении.";
+            else if (user.InOnlineGame)
+                infoLabel.Text += $"\nВ игре:\n" +
+                    $"Противник:\n" +
+                    $"id: {enemy.Id}" +
+                    $"Имя: {enemy.FirstName}" +
+                    $"@{enemy.NickName}" +
+                    $"Очки: {enemy.Points}С";
+            else
+                infoLabel.Text += $"\nБездействует.";
+            infoLabel.Visible = true;
+        }
     }
 }
