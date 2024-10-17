@@ -426,7 +426,8 @@ namespace War_Ai_Game_TelegramBot
 
             }
             buttons.Add(new List<InlineKeyboardButton>() { InlineKeyboardButton.WithCallbackData("\U0000274EОбычный Вирус.bat", "Empty") });
-            return new InlineKeyboardMarkup(buttons);
+            return new InlineKeyboardMarkup(buttons);  
         }
     }
+
 }

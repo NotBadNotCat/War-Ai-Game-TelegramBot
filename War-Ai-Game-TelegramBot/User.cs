@@ -41,10 +41,12 @@ namespace War_Ai_Game_TelegramBot
         {
             EnemyId = 0;
             IsPlayerMove = false;
+            IsUserSendCards = false;
             FileDamage = 1;
             HealthPoints = 4;
             Score = 0;
             FileExtensions = new List<string>() { "EmptyFile", "Antivirus", "EncryptionVirus", "Diagnostics", "DoubleSending" };
+
         }
     }
 }
