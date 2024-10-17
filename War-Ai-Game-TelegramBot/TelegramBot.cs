@@ -2,6 +2,7 @@
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -147,11 +148,10 @@ namespace War_Ai_Game_TelegramBot
                         else if (messageText == "/skip" && !Storage.Users[chatId].IsPlayerMove)
                         {
                             if (DateTime.Now > Storage.Users[Storage.Users[chatId].EnemyId].LastMoveTime.AddSeconds(20))
+                            { 
                                 AiWarGame.MoveTransition(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[chatId]);
-                            /*else
-                                EditMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[0],
-                                        $"\U00002694_Ваш противник:_ *{Storage.Users[Storage.Users[chatId].EnemyId].FirstName}*\n" +
-                                        $"\U000026A0*Ошибка! 20 секунд ещё не прошли.");*/
+                                Storage.Users[Storage.Users[chatId].EnemyId].IsUserSendCards = false;
+                            }
                             DelitMessage(Storage.Users[chatId], update.Message.MessageId);
                         }
                         else
