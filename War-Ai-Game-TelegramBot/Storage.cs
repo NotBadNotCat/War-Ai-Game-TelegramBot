@@ -54,6 +54,7 @@ namespace War_Ai_Game_TelegramBot
 
             else if (message == "/rules" || message == "/r")
             {
+
                 return "\U00002753*Как играть:*\U00002753\r\n\r\n" +
                     "_1._*Обычный режим:*\r\n" +
                     "Все очень просто, уничтожай или будь уничтоженным! " +
