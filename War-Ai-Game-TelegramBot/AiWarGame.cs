@@ -75,7 +75,7 @@ namespace War_Ai_Game_TelegramBot
                         }
                 }
             }
-            else if (user.IsPlayerMove)
+            else if (user.IsPlayerTurn)
             {
                 switch (сallbackQueryData)
                 {
@@ -139,9 +139,9 @@ namespace War_Ai_Game_TelegramBot
         }
         public static void MoveTransition(User fromUser, User toUser)
         {
-            fromUser.IsPlayerMove = false;
+            fromUser.IsPlayerTurn = false;
             toUser.IsUserSendCards = false;
-            toUser.IsPlayerMove = true;
+            toUser.IsPlayerTurn = true;
             TelegramBot.DelitMessage(fromUser, fromUser.BotMessagesId[fromUser.BotMessagesId.Count - 1]);
             fromUser.BotMessagesId.RemoveAt(fromUser.BotMessagesId.Count - 1);
             TelegramBot.DelitMessage(toUser, toUser.BotMessagesId[toUser.BotMessagesId.Count - 1]);
@@ -277,11 +277,11 @@ namespace War_Ai_Game_TelegramBot
                 case "End":
                     {
                         string text = "*Удачи в матчах!*";
-                        if (!user.IsCompletTutorial)
+                        if (!user.HasCompletedTutorial)
                         {
                             user.Points += 8;
                             text = "Так как вы *прошли обучение 1й раз*, вы получаете _8_ бонусных очков!\n\n*Удачи в матчах!*";
-                            user.IsCompletTutorial = true;
+                            user.HasCompletedTutorial = true;
                         }
                         for (int i = 0; i < user.BotMessagesId.Count; i++)
                             TelegramBot.DelitMessage(user, user.BotMessagesId[i]);
@@ -291,7 +291,7 @@ namespace War_Ai_Game_TelegramBot
                             $"о чем было написано в некоторых видах файлов. Так вот, если вы отправите себе свой же вирус себе, " +
                             $"то ваши сервера пострадают!\n\n{text}",
                             replyMarkup: Storage.GetKeyboardMarkup("ExitOnline"));
-                        user.InTutorial = false;
+                        user.IsInTutorial = false;
                         Storage.SaveUsers();
                         break;
                     }
@@ -319,15 +319,15 @@ namespace War_Ai_Game_TelegramBot
         }
         public static void StartSearch(User user)
         {
-            user.InSearchGame = true;
+            user.IsInSearchGame = true;
 
             foreach (var enemy in Storage.Users)
-                if (enemy.Value.Id != user.Id && enemy.Value.InSearchGame)
+                if (enemy.Value.Id != user.Id && enemy.Value.IsInSearchGame)
                 {
-                    user.InOnlineGame = true;
-                    enemy.Value.InOnlineGame = true;
-                    enemy.Value.InSearchGame = false;
-                    user.InSearchGame = false;
+                    user.IsInOnlineGame = true;
+                    enemy.Value.IsInOnlineGame = true;
+                    enemy.Value.IsInSearchGame = false;
+                    user.IsInSearchGame = false;
 
                     TelegramBot.SendMessage(enemy.Value,
                         $"*\U0001F47EПротивник найден!*\n" +
@@ -344,7 +344,7 @@ namespace War_Ai_Game_TelegramBot
 
                     enemy.Value.EnemyId = user.Id;
                     user.EnemyId = enemy.Key;
-                    enemy.Value.IsPlayerMove = true;
+                    enemy.Value.IsPlayerTurn = true;
                     Storage.Users[user.Id] = user;
                     Storage.Users[enemy.Value.Id] = enemy.Value;
 
@@ -388,11 +388,11 @@ namespace War_Ai_Game_TelegramBot
 
             loser.BotMessagesId.Clear();
 
-            winer.InOnlineGame = false;
-            loser.InOnlineGame = false;
+            winer.IsInOnlineGame = false;
+            loser.IsInOnlineGame = false;
             winer.Points += winer.Score;
-            winer.MatchsStatistics.Add(winer.Score);
-            loser.MatchsStatistics.Add(-1 * winer.Score);
+            winer.MatchStatistics.Add(winer.Score);
+            loser.MatchStatistics.Add(-1 * winer.Score);
             if (loser.Points >= winer.Score)
                 loser.Points -= winer.Score;
             else

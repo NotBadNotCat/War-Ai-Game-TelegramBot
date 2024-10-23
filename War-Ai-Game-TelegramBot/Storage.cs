@@ -108,16 +108,16 @@ namespace War_Ai_Game_TelegramBot
                         }
                 }
                 string text = "";
-                for (int i = 0; i < Users[userId].MatchsStatistics.Count; i++)
+                for (int i = 0; i < Users[userId].MatchStatistics.Count; i++)
                 {
                     if (i == 10)
                     {
                         break;
                     }
-                    else if (Users[userId].MatchsStatistics[i] >= 0)
-                        text += $"_Игра_ - *{Users[userId].MatchsStatistics.Count - i}:*\n\U0001F4C8_Победа:_ *+{Users[userId].MatchsStatistics[i]}C*\n\n";
+                    else if (Users[userId].MatchStatistics[i] >= 0)
+                        text += $"_Игра_ - *{Users[userId].MatchStatistics.Count - i}:*\n\U0001F4C8_Победа:_ *+{Users[userId].MatchStatistics[i]}C*\n\n";
                     else
-                        text += $"_Игра_ - *{Users[userId].MatchsStatistics.Count - i}:*\n\U0001F4C9_Поражение:_ *{Users[userId].MatchsStatistics[i]}C*\n\n";
+                        text += $"_Игра_ - *{Users[userId].MatchStatistics.Count - i}:*\n\U0001F4C9_Поражение:_ *{Users[userId].MatchStatistics[i]}C*\n\n";
                 }
                 if (text == "")
                     text = "\U0000274c_Вы ещё не играли!_";

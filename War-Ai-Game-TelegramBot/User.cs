@@ -19,18 +19,18 @@ namespace War_Ai_Game_TelegramBot
         public List<string> Messages = new List<string>();
 
         public bool IsBanned;
-        public bool IsCompletTutorial;
+        public bool HasCompletedTutorial;
 
-        public bool InOnlineGame;
-        public bool InTutorial;
-        public bool InSearchGame;
+        public bool IsInOnlineGame;
+        public bool IsInTutorial;
+        public bool IsInSearchGame;
 
         public int Points = 0;
         public int Score = 0;
-        public List<int> MatchsStatistics = new List<int>();
+        public List<int> MatchStatistics = new List<int>();
 
         public Int64 EnemyId;
-        public bool IsPlayerMove;
+        public bool IsPlayerTurn;
         public bool IsUserSendCards;
         public DateTime LastMoveTime;
         public int FileDamage = 1;
@@ -40,7 +40,7 @@ namespace War_Ai_Game_TelegramBot
         public void ReloadGameParameters()
         {
             EnemyId = 0;
-            IsPlayerMove = false;
+            IsPlayerTurn = false;
             IsUserSendCards = false;
             FileDamage = 1;
             HealthPoints = 4;

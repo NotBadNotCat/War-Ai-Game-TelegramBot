@@ -44,19 +44,19 @@ namespace War_Ai_Game_TelegramBot
                 {
                     Storage.Users[chatId].Messages.Add($"#Click = {update.CallbackQuery.Data}#");
 
-                    if (Storage.Users[chatId].InSearchGame)
+                    if (Storage.Users[chatId].IsInSearchGame)
                     {
                         if (update.CallbackQuery.Data == "StopSearch")
                         {
-                            Storage.Users[chatId].InSearchGame = false;
+                            Storage.Users[chatId].IsInSearchGame = false;
                             SendMessage(Storage.Users[chatId], "\U0000274E*Поиск отменён!*\nВведите /start");
                         }
                     }
-                    else if (Storage.Users[chatId].InOnlineGame)
+                    else if (Storage.Users[chatId].IsInOnlineGame)
                     {
                         AiWarGame.Game(Storage.Users[chatId], update.CallbackQuery.Data);
                     }
-                    else if (Storage.Users[chatId].InTutorial)
+                    else if (Storage.Users[chatId].IsInTutorial)
                     {
                         AiWarGame.Tutorial(Storage.Users[chatId], update.CallbackQuery.Data);
                     }
@@ -79,7 +79,7 @@ namespace War_Ai_Game_TelegramBot
                                 }
                             case "Tutorial":
                                 {
-                                    Storage.Users[chatId].InTutorial = true;
+                                    Storage.Users[chatId].IsInTutorial = true;
                                     AiWarGame.Tutorial(Storage.Users[chatId], "Start");
                                     break;
                                 }
@@ -106,11 +106,11 @@ namespace War_Ai_Game_TelegramBot
 
                     Storage.Users[chatId].Messages.Add(messageText);
 
-                    if (Storage.Users[chatId].InSearchGame)
+                    if (Storage.Users[chatId].IsInSearchGame)
                     {
                         if (messageText == "/stop")
                         {
-                            Storage.Users[chatId].InSearchGame = false;
+                            Storage.Users[chatId].IsInSearchGame = false;
                             DelitMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[Storage.Users[chatId].BotMessagesId.Count - 1]);
                             SendMessage(Storage.Users[chatId], "\U0000274E*Поиск отменён!*\nВведите /start");
                             Storage.Users[chatId].BotMessagesId.RemoveAt(Storage.Users[chatId].BotMessagesId.Count - 1);
@@ -120,7 +120,7 @@ namespace War_Ai_Game_TelegramBot
                             DelitMessage(Storage.Users[chatId], update.Message.MessageId);
                         }
                     }
-                    else if (Storage.Users[chatId].InOnlineGame)
+                    else if (Storage.Users[chatId].IsInOnlineGame)
                     {
                         if (messageText.Contains("/msg ") || messageText.Contains("/message "))
                         {
@@ -145,7 +145,7 @@ namespace War_Ai_Game_TelegramBot
                             SendMessage(Storage.Users[chatId], "\U0001F50C*Вы само отформатировались!*\U0001F525");
                             AiWarGame.WinGame(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[chatId]);
                         }
-                        else if (messageText == "/skip" && !Storage.Users[chatId].IsPlayerMove)
+                        else if (messageText == "/skip" && !Storage.Users[chatId].IsPlayerTurn)
                         {
                             if (DateTime.Now > Storage.Users[Storage.Users[chatId].EnemyId].LastMoveTime.AddSeconds(20))
                             { 
@@ -164,7 +164,7 @@ namespace War_Ai_Game_TelegramBot
                             DelitMessage(Storage.Users[chatId], update.Message.MessageId);
                         }
                     }
-                    else if (Storage.Users[chatId].InTutorial)
+                    else if (Storage.Users[chatId].IsInTutorial)
                     {
                         if (messageText == "/exit")
                         {
@@ -172,7 +172,7 @@ namespace War_Ai_Game_TelegramBot
                                 DelitMessage(Storage.Users[chatId], Storage.Users[chatId].BotMessagesId[i]);
                             Storage.Users[chatId].BotMessagesId.Clear();
                             SendMessage(Storage.Users[chatId], "\U0001F4CCВы *покинули* обучение*!*", replyMarkup: Storage.GetKeyboardMarkup("ExitOnline"));
-                            Storage.Users[chatId].InTutorial = false;
+                            Storage.Users[chatId].IsInTutorial = false;
                             DelitMessage(Storage.Users[chatId], update.Message.MessageId);
                         }
                         else
@@ -195,7 +195,7 @@ namespace War_Ai_Game_TelegramBot
 
                 Storage.UserExsistCheckAndWrite(chatId, update.Message.From.FirstName, update.Message.From.Username);
                 Storage.Users[chatId].Messages.Add("#Wrong_Format_Message#");
-                if (Storage.Users[chatId].InOnlineGame || Storage.Users[chatId].InSearchGame || Storage.Users[chatId].InTutorial)
+                if (Storage.Users[chatId].IsInOnlineGame || Storage.Users[chatId].IsInSearchGame || Storage.Users[chatId].IsInTutorial)
                     DelitMessage(Storage.Users[chatId], update.Message.MessageId);
                 else
                 {

@@ -50,11 +50,11 @@ namespace War_Ai_Game_TelegramBot
 
                 foreach (var user in Storage.Users)
                 {
-                    if (user.Value.InOnlineGame)
+                    if (user.Value.IsInOnlineGame)
                         countUserInOnlineGame++;
-                    else if (user.Value.InTutorial)
+                    else if (user.Value.IsInTutorial)
                         countUserInSandbox++;
-                    else if (user.Value.InSearchGame)
+                    else if (user.Value.IsInSearchGame)
                         countUserInSearchGame++;
                     else if (user.Value.IsBanned)
                         countBannedUsers++;
@@ -118,11 +118,11 @@ namespace War_Ai_Game_TelegramBot
         {
             foreach (var user in Storage.Users)
             {
-                if (user.Value.InOnlineGame || user.Value.InSearchGame || user.Value.InTutorial)
+                if (user.Value.IsInOnlineGame || user.Value.IsInSearchGame || user.Value.IsInTutorial)
                 {
-                    user.Value.InOnlineGame = false;
-                    user.Value.InSearchGame = false;
-                    user.Value.InTutorial = false;
+                    user.Value.IsInOnlineGame = false;
+                    user.Value.IsInSearchGame = false;
+                    user.Value.IsInTutorial = false;
                     for (int i = 0; i < user.Value.BotMessagesId.Count; i++)
                         TelegramBot.DelitMessage(user.Value, user.Value.BotMessagesId[i]);
                     TelegramBot.SendMessage(user.Value, "\U0001F6E0*Матч отменён* из-за технических работ\U0001F6A7");
@@ -141,12 +141,12 @@ namespace War_Ai_Game_TelegramBot
                 $"Имя: {user.FirstName}\n" +
                 $"@{user.NickName}\n" +
                 $"Очки: {user.Points}С\n" +
-                $"Прошёл туториал: {user.IsCompletTutorial}\n";
-            if (user.InSearchGame)
+                $"Прошёл туториал: {user.HasCompletedTutorial}\n";
+            if (user.IsInSearchGame)
                 infoLabel.Text += "\nИщет игру...";
-            else if (user.InTutorial)
+            else if (user.IsInTutorial)
                 infoLabel.Text += "\nВ обучении.";
-            else if (user.InOnlineGame)
+            else if (user.IsInOnlineGame)
                 infoLabel.Text += $"\nВ игре:\n" +
                     $"Противник:\n" +
                     $"id: {enemy.Id}" +
