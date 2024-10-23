@@ -1,14 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.ApplicationServices;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -22,6 +12,20 @@ namespace War_Ai_Game_TelegramBot
         {
             BotClient = new TelegramBotClient("7780011437:AAEl8GgGMi9xPb1EaMPbzpcDL7B6M7SWYhU");
             BotClient?.StartReceiving(updateHandler: HandleUpdate, pollingErrorHandler: HandlePollingError);
+            BotClient?.SetMyCommandsAsync(new[] {
+            new BotCommand { Command = "start", Description = "Выводит стартовое меню выбора." },
+            new BotCommand { Command = "help", Description = "Выводит все команды бота." },
+            new BotCommand { Command = "rules", Description = "Выводит правила игры." },
+            new BotCommand { Command = "help", Description = "Выводит все команды бота." },
+            new BotCommand { Command = "game", Description = "Выводит меню выбора режим игры." },
+            new BotCommand { Command = "search", Description = "Запускает поиск игроков в онлайн режиме." },
+            new BotCommand { Command = "statistics", Description = "Выводит вашу статистику." },
+            new BotCommand { Command = "top", Description = "Выводит таблицу лидеров." },
+            new BotCommand { Command = "stop", Description = "Останавливает поиск игроков." },
+            new BotCommand { Command = "exit", Description = "Покинуть матч." },
+            new BotCommand { Command = "skip", Description = "Пропустить ход противника." },
+            new BotCommand { Command = "message", Description = "Отправить сообщение противнику(после команды через пробел пишем свое сообщение)." }
+        });
         }
         private static async Task HandlePollingError(ITelegramBotClient client, Exception exception, CancellationToken token)
         {
@@ -148,7 +152,7 @@ namespace War_Ai_Game_TelegramBot
                         else if (messageText == "/skip" && !Storage.Users[chatId].IsPlayerTurn)
                         {
                             if (DateTime.Now > Storage.Users[Storage.Users[chatId].EnemyId].LastMoveTime.AddSeconds(20))
-                            { 
+                            {
                                 AiWarGame.MoveTransition(Storage.Users[Storage.Users[chatId].EnemyId], Storage.Users[chatId]);
                                 Storage.Users[Storage.Users[chatId].EnemyId].IsUserSendCards = false;
                             }
